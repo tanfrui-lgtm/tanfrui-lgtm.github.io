@@ -1,0 +1,48 @@
+@font-face{font-family:'Fraunces';src:url('assets/fonts/fraunces-variable.woff2') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}
+@font-face{font-family:'Fraunces';src:url('assets/fonts/fraunces-italic-variable.woff2') format('woff2');font-style:italic;font-weight:100 900;font-display:swap}
+@font-face{font-family:'Nunito';src:url('assets/fonts/nunito-variable.woff2') format('woff2');font-style:normal;font-weight:200 1000;font-display:swap}
+@font-face{font-family:'Ma Shan Zheng';src:url('assets/fonts/ma-shan-zheng-site-subset.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+:root{--display:'Fraunces',Georgia,serif;--sans:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;--brush:'Ma Shan Zheng','STXingkai','STKaiti','KaiTi',serif;--reading:'Nunito','STKaiti','KaiTi','Kaiti SC','Noto Serif CJK SC',serif}
+body{font-family:var(--sans);font-size:1.0625rem;font-weight:450;line-height:1.85;color:#302637}
+.about-section h1,html[lang=en] .about-section h1{font-family:var(--display);font-variation-settings:'SOFT' 100,'WONK' 1; font-optical-sizing:auto;font-size:clamp(4.6rem,7.6vw,6.35rem);font-weight:500;line-height:1.08;letter-spacing:-.065em;margin:0 0 30px -4px}
+.about-section h1 em{font-weight:450;font-style:italic;letter-spacing:-.06em}
+.about-section>p.hello-line{font-family:var(--sans);font-weight:550;font-size:1.4rem;line-height:1.55;letter-spacing:-.025em}
+.about-section>p:not(.eyebrow):not(.hello-line),.research-content>p{font-size:1.0625rem;line-height:1.9;font-weight:450}
+.section-heading h2{font-family:var(--display);font-variation-settings:'SOFT' 90,'WONK' 1;font-size:2.75rem;font-weight:500;line-height:1.2;letter-spacing:-.045em}
+.section-heading h2>span{font-family:var(--display);font-variation-settings:'SOFT' 100;font-size:1.25rem;font-weight:400;font-style:italic;letter-spacing:-.025em;margin-left:20px}
+.research-content h3{font-family:var(--display);font-variation-settings:'SOFT' 90,'WONK' 1;font-size:2rem;font-weight:500;line-height:1.3;letter-spacing:-.035em}
+.publication h3{font-family:var(--display);font-variation-settings:'SOFT' 60;font-size:1.55rem;font-weight:450;line-height:1.5;letter-spacing:-.025em}
+.award h3{font-family:var(--display);font-variation-settings:'SOFT' 100;font-size:1.7rem;font-weight:450;line-height:1.4;letter-spacing:-.025em}
+.education-item h3{font-family:var(--sans);font-size:1.2rem;font-weight:750;letter-spacing:-.025em;line-height:1.5}
+.news-section h2{font-family:var(--display);font-variation-settings:'SOFT' 100;font-size:1.9rem;font-weight:500;line-height:1.25;letter-spacing:-.03em}
+.news-section h2>span{font-family:var(--display);font-style:italic;font-size:1rem}
+.profile-name{font-family:var(--display);font-variation-settings:'SOFT' 100;font-size:2.15rem;font-weight:500;line-height:1.25;letter-spacing:-.04em}
+.profile-name span,html[lang=en] .profile-name span,.wordmark-cn{font-family:var(--brush);font-weight:400;font-size:1.7rem;letter-spacing:0;white-space:nowrap}
+.wordmark-cn{font-size:1.45rem;margin-left:13px;color:#786081}.wordmark{font-weight:800}.monogram{font-family:var(--display);font-variation-settings:'SOFT' 100;font-size:2.5rem;font-weight:550}
+.profile-role,.email{font-size:.8125rem!important;font-weight:500;line-height:1.8}.nav a{font-size:.9375rem;font-weight:600;letter-spacing:-.015em}.language-toggle{font-weight:650}
+.eyebrow,html[lang=en] .eyebrow{font-family:var(--sans);font-size:.75rem!important;letter-spacing:.17em!important;font-weight:750}
+.interest-tags span{font-size:.8125rem!important;font-weight:600}.intro-links{font-size:.9375rem;font-weight:650}.section-lead{font-size:1rem;line-height:1.8}
+.section-number,.publication-index{font-family:var(--display);font-variation-settings:'SOFT' 100;font-size:1.25rem;font-weight:400;letter-spacing:-.05em}
+.authors,.publication-note,.degree,.item-note,.paper-links,.news-section li{font-size:.9375rem;line-height:1.85}.venue{font-size:.8125rem;font-weight:800}.status{font-size:.8125rem;font-weight:600}.period{font-size:.875rem}.research-meta{font-size:.75rem!important;letter-spacing:.07em}.research-content .research-result,.detail-content{font-size:.9375rem}.research-item summary{font-size:.875rem}.paper-links a{font-size:.875rem}
+html[lang=zh-CN] body{font-family:var(--reading)}
+html[lang=zh-CN] .about-section h1{font-family:var(--brush);font-size:clamp(4.9rem,7.7vw,6.7rem);font-weight:400;line-height:1.22;letter-spacing:.025em;word-spacing:0;margin-left:-4px}
+html[lang=zh-CN] .about-section h1 em{font-style:normal;font-weight:400;letter-spacing:.035em}
+html[lang=zh-CN] .about-section>p.hello-line{font-family:var(--reading);font-size:1.6rem;font-weight:400;line-height:1.65;letter-spacing:.02em}
+html[lang=zh-CN] .about-section>p:not(.eyebrow):not(.hello-line),html[lang=zh-CN] .research-content>p{font-family:var(--reading);font-size:1.2rem;font-weight:400;line-height:1.95;letter-spacing:.015em}
+html[lang=zh-CN] .section-heading h2{font-family:var(--brush);font-size:3rem;font-weight:400;line-height:1.4;letter-spacing:.05em}
+html[lang=zh-CN] .research-content h3,html[lang=zh-CN] .award h3{font-family:var(--brush);font-size:2.05rem;font-weight:400;line-height:1.6;letter-spacing:.025em}
+html[lang=zh-CN] .education-item h3{font-family:var(--reading);font-size:1.45rem;font-weight:600;letter-spacing:.01em}
+html[lang=zh-CN] .news-section h2{font-family:var(--brush);font-size:2.2rem;letter-spacing:.03em}
+html[lang=zh-CN] .profile-name{font-family:var(--brush);font-size:2.8rem;font-weight:400;letter-spacing:.07em}
+html[lang=zh-CN] .profile-name span{font-family:var(--display);font-size:1.5rem;letter-spacing:-.03em}
+html[lang=zh-CN] .section-lead,html[lang=zh-CN] .degree,html[lang=zh-CN] .item-note,html[lang=zh-CN] .publication-note,html[lang=zh-CN] .detail-content,html[lang=zh-CN] .news-section li{font-family:var(--reading);font-size:1.1rem;font-weight:400;letter-spacing:.01em}
+html[lang=zh-CN] .nav a,html[lang=zh-CN] .intro-links a{font-family:var(--reading);font-size:1.15rem;font-weight:500}
+html[lang=zh-CN] .publication h3,html[lang=zh-CN] .authors{font-family:var(--display)}
+html[lang=zh-CN] .authors{font-family:var(--sans)}
+html[lang=zh-CN] .certificate-toolbar h2{font-family:var(--brush);font-size:1.75rem;font-weight:400;letter-spacing:.025em}
+@media(max-width:1100px){.about-section h1,html[lang=en] .about-section h1{font-size:5.1rem}.award h3{font-size:1.5rem}html[lang=zh-CN] .about-section h1{font-size:5.3rem}}
+@media(min-width:761px) and (max-width:1150px){.profile-name span{display:block;margin-left:0;margin-top:6px}}
+@media(max-width:850px){.about-section h1,html[lang=en] .about-section h1{font-size:4.4rem}.nav a,html[lang=en] .nav a{font-size:.875rem}.profile-name{font-size:1.8rem}.profile-name span{display:block;margin-left:0;margin-top:6px}html[lang=zh-CN] .about-section h1{font-size:4.75rem}}
+@media(max-width:760px){.about-section h1,html[lang=en] .about-section h1{font-size:clamp(4rem,11.5vw,5.4rem)}.profile-name span{display:inline;margin-left:10px}.section-heading h2{font-size:2.5rem}.publication h3{font-size:1.45rem}.research-content h3{font-size:1.9rem}.profile-name{font-size:1.9rem}.profile-role,.email{font-size:.75rem!important}.about-section>p.hello-line{font-size:1.3rem}html[lang=zh-CN] .about-section h1{font-size:4.8rem}html[lang=zh-CN] .profile-name{font-size:2.5rem}html[lang=zh-CN] .section-heading h2{font-size:2.7rem}}
+@media(max-width:600px){.award h3{font-family:var(--sans);font-size:1.025rem;font-weight:700;letter-spacing:-.02em;line-height:1.6}.section-heading h2{font-size:2.2rem}html[lang=zh-CN] .award h3{font-family:var(--reading);font-size:1.3rem;font-weight:500;line-height:1.6}html[lang=zh-CN] .certificate-toolbar h2{font-size:1.35rem}.section-heading h2>span{display:block;margin-left:0;margin-top:7px}.about-section>p:not(.eyebrow):not(.hello-line),.research-content>p{font-size:1rem}}
+@media(max-width:440px){.about-section h1,html[lang=en] .about-section h1{font-size:clamp(3.45rem,13.8vw,4.5rem);line-height:1.12}.profile-name{font-size:1.7rem}.profile-name span,html[lang=en] .profile-name span{font-size:1.4rem}.profile-name span{margin-left:8px}.wordmark-cn{display:none}.about-section>p.hello-line{font-size:1.2rem}.section-heading h2{font-size:2rem}.publication h3{font-size:1.3rem}.research-content h3{font-size:1.8rem}html[lang=zh-CN] .about-section h1{font-size:clamp(3.35rem,14vw,4.1rem)}html[lang=zh-CN] .section-heading h2{font-size:2.4rem}html[lang=zh-CN] .research-content h3{font-size:1.9rem}html[lang=zh-CN] .about-section>p:not(.eyebrow):not(.hello-line),html[lang=zh-CN] .research-content>p{font-size:1.15rem}}
