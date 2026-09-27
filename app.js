@@ -6,7 +6,7 @@
       role:'哈尔滨工业大学（威海）本科生', field:'船舶与海洋工程',
       incoming:'清华大学 · 2027 级硕士推免录取',
       intro:'让智能，<br><em>走向行动。</em>',
-      about:'目前就读于哈尔滨工业大学（威海）船舶与海洋工程专业，已通过推荐免试录取至清华大学深圳国际研究生院大数据技术与工程硕士项目，预计于 2027 年入学。',
+      about:'我就读于哈尔滨工业大学（威海）船舶与海洋工程专业，已获清华大学深圳国际研究生院大数据技术与工程硕士推免录取，预计 2027 年入学。',
       focus:'我的研究兴趣包括视觉–语言–动作模型（VLA）、AI for Science、自主智能体控制与控制理论。已有工作涉及微尺度机器人操作、多无人机协同规划与控制、欠驱动无人船以及振子网络同步。',
       contact:'邮件联系', download:'查看简历', interests:'研究兴趣',
       tags:['视觉–语言–动作模型','AI for Science','自主智能体控制','控制理论'],
@@ -14,9 +14,8 @@
       newsItems:[['2026.09','推免录取至清华大学深圳国际研究生院大数据技术与工程硕士项目。'],['2026','两篇微操作 VLA 合作论文获 IROS 2026 录用。']],
       education:'教育经历',educationEn:'Education',research:'研究与项目',researchEn:'Research',publications:'论文成果',publicationsEn:'Publications',awards:'荣誉与奖励',awardsEn:'Honors & awards',
       researchLead:'从可证明的控制方法，到感知与行动相结合的智能系统。',
-      publicationsLead:'论文状态依据 2026 年 9 月更新的个人简历。',
       footer:'唐睿 · 个人学术主页',updated:'最近更新',menu:'打开导航',closeMenu:'关闭导航',
-      paperPage:'论文页面',publisherPage:'出版页面 · DOI',video:'演示视频',details:'研究详情',contribution:'本人贡献',abstract:'研究内容',evidence:'获奖证书',firstAuthor:'第一作者',
+      paperPage:'论文页面',publisherPage:'出版页面 · DOI',video:'演示视频',details:'研究详情',abstract:'研究内容',evidence:'获奖证书',firstAuthor:'第一作者',
       status:{published:'已发表',accepted:'已录用',conditional:'条件接收'},
       awardsLead:'代表性竞赛与学术荣誉',allAwards:'其他竞赛与奖学金',
       profileNote:'大数据技术与工程', incomingLabel:'下一站 · 清华大学', expected:'2027 年入学',
@@ -29,7 +28,7 @@
       role:'Undergraduate at HIT, Weihai',field:'Naval Architecture & Ocean Engineering',
       incoming:'TSINGHUA UNIVERSITY · INCOMING MASTER’S STUDENT, 2027',
       intro:'Intelligence,<br><em>in motion.</em>',
-      about:'I am an undergraduate in Naval Architecture and Ocean Engineering at Harbin Institute of Technology, Weihai. I have been admitted through recommendation to the master’s program in Big Data Technology and Engineering at Tsinghua Shenzhen International Graduate School, with expected entry in 2027.',
+      about:'I study Naval Architecture and Ocean Engineering at Harbin Institute of Technology, Weihai. I am an incoming master’s student in Big Data Technology and Engineering at Tsinghua Shenzhen International Graduate School, starting in 2027.',
       focus:'My research interests include vision–language–action (VLA) models, AI for Science, autonomous agent control, and control theory. My work spans robotic micromanipulation, multi-UAV planning and control, underactuated surface vessels, and synchronization of oscillator networks.',
       contact:'Get in touch',download:'View CV',interests:'Research interests',
       tags:['Vision–language–action','AI for Science','Autonomous agents','Control theory'],
@@ -37,9 +36,8 @@
       newsItems:[['2026.09','Admitted to the master’s program in Big Data Technology and Engineering at Tsinghua SIGS.'],['2026','Two collaborative papers on VLA for micromanipulation accepted at IROS 2026.']],
       education:'Education',educationEn:'',research:'Research & projects',researchEn:'',publications:'Publications',publicationsEn:'',awards:'Honors & awards',awardsEn:'',
       researchLead:'From control methods with theoretical guarantees to intelligent systems that connect perception and action.',
-      publicationsLead:'Publication status follows my CV, updated in September 2026.',
       footer:'Rui Tang · Academic homepage',updated:'Last updated',menu:'Open navigation',closeMenu:'Close navigation',
-      paperPage:'Paper page',publisherPage:'Publisher page · DOI',video:'Demo video',details:'Research details',contribution:'My contribution',abstract:'Overview',evidence:'Certificate',firstAuthor:'First author',
+      paperPage:'Paper page',publisherPage:'Publisher page · DOI',video:'Demo video',details:'Research details',abstract:'Overview',evidence:'Certificate',firstAuthor:'First author',
       status:{published:'Published',accepted:'Accepted',conditional:'Conditionally accepted'},
       awardsLead:'Selected competition and academic honors',allAwards:'More competitions & scholarships',
       profileNote:'Big Data Technology and Engineering',incomingLabel:'Next · Tsinghua University',expected:'Expected entry in 2027',
@@ -116,7 +114,7 @@
     }),{rootMargin:'-10% 0px -65% 0px',threshold:0});
     document.querySelectorAll('main section[id]').forEach(s=>window.ruiObserver.observe(s));
   }
-  function renderResearch(c) { return P.research.length ? `<section class="content-section" id="research" aria-labelledby="research-title">${sectionTitle('research',c.research,c.researchEn,'02')}<p class="section-lead">${c.researchLead}</p><div class="research-list">${P.research.map((r,i)=>`<article class="research-item"><div class="research-visual"><img src="${r.image}" alt="${esc(t(r.imageAlt))}" width="800" height="500" loading="lazy"></div><div class="research-content"><div class="research-meta"><span>${esc(t(r.label))}</span><span>${r.period}</span></div><h3>${esc(t(r.title))}</h3><p>${esc(t(r.summary))}</p><p class="research-result">${esc(t(r.result))}</p><details><summary>${c.details}<span aria-hidden="true">+</span></summary><div class="detail-content"><p>${esc(t(r.detail))}</p><p><strong>${c.contribution}：</strong>${esc(t(r.contribution))}</p></div></details></div></article>`).join('')}</div></section>` : ''; }
+  function renderResearch(c) { return P.research.length ? `<section class="content-section" id="research" aria-labelledby="research-title">${sectionTitle('research',c.research,c.researchEn,'02')}<p class="section-lead">${c.researchLead}</p><div class="research-list">${P.research.map((r,i)=>`<article class="research-item"><div class="research-visual"><img src="${r.image}" alt="${esc(t(r.imageAlt))}" width="800" height="500" loading="lazy"></div><div class="research-content"><div class="research-meta"><span>${esc(t(r.label))}</span><span>${r.period}</span></div><h3>${esc(t(r.title))}</h3><p>${esc(t(r.summary))}</p><p class="research-result">${esc(t(r.result))}</p><details><summary>${c.details}<span aria-hidden="true">+</span></summary><div class="detail-content"><p>${esc(t(r.detail))}</p></div></details></div></article>`).join('')}</div></section>` : ''; }
   function renderPublicationLinks(p,c) {
     if (p.status === 'conditional') return '';
     const links=[];
@@ -126,7 +124,7 @@
     return links.length ? `<div class="paper-links">${links.join('')}</div>` : '';
   }
   function renderPublications(c) {
-    return P.publications.length ? `<section class="content-section" id="publications" aria-labelledby="publications-title">${sectionTitle('publications',c.publications,c.publicationsEn,'03')}<p class="section-lead">${c.publicationsLead}</p><ol class="publication-list">${P.publications.map((p,i)=>`<li class="publication"><span class="publication-index">${String(i+1).padStart(2,'0')}</span><div class="publication-body"><div class="publication-meta"><span class="venue">${p.venue}</span><span class="status ${p.status}">${c.status[p.status]}</span></div><h3 lang="en">${esc(p.title)}</h3><p class="authors" lang="en">${p.authors.map(a=>a==='Rui Tang'?`<strong>Rui Tang</strong>`:esc(a)).join(', ')}</p><p class="publication-note">${esc(t(p.note))}</p>${renderPublicationLinks(p,c)}</div></li>`).join('')}</ol></section>` : '';
+    return P.publications.length ? `<section class="content-section" id="publications" aria-labelledby="publications-title">${sectionTitle('publications',c.publications,c.publicationsEn,'03')}<ol class="publication-list">${P.publications.map((p,i)=>`<li class="publication"><span class="publication-index">${String(i+1).padStart(2,'0')}</span><div class="publication-body"><div class="publication-meta"><span class="venue">${p.venue}</span><span class="status ${p.status}">${c.status[p.status]}</span></div><h3 lang="en">${esc(p.title)}</h3><p class="authors" lang="en">${p.authors.map(a=>a==='Rui Tang'?`<strong>Rui Tang</strong>`:esc(a)).join(', ')}</p><p class="publication-note">${esc(t(p.note))}</p>${renderPublicationLinks(p,c)}</div></li>`).join('')}</ol></section>` : '';
   }
   function certificateAssets(a) {
     const pdf = /\.pdf$/i.test(a.proof);
