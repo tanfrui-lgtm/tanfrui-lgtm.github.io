@@ -1,0 +1,34 @@
+/* Each paper pairs its bibliographic details with a figure from the work. */
+#publications .publication{grid-template-columns:28px minmax(0,1fr) minmax(240px,31%);gap:24px;align-items:center;padding:34px 0}
+#publications .publication:hover{padding-left:0}
+#publications .publication-index{align-self:start;padding-top:3px}
+#publications .publication h3{font-size:1.45rem;line-height:1.4}
+#publications .publication-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+#publications .publication-meta .venue{font-size:.75rem}
+#publications .publication-note{margin-bottom:10px}
+.status.upcoming{color:#776287;background:#f2edf7;border-color:#ddd1e6}
+.presentation-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border:1px solid #ad8791;border-radius:30px;color:#7d374f;background:#f8edf1;font:700 .75rem/1.5 var(--sans);white-space:nowrap}
+.presentation-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+.paper-preview{display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;font-family:var(--sans);color:var(--purple);cursor:zoom-in}
+.paper-image-frame{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1.32;padding:12px;background:#fff;border:1px solid #e7dfed;border-radius:16px 4px 16px 4px;box-shadow:0 7px 23px #3d274309;transition:transform .25s ease,box-shadow .25s ease}
+.paper-image-frame img{display:block;width:100%;height:100%;object-fit:contain}
+.paper-preview:hover .paper-image-frame{transform:translateY(-3px);box-shadow:0 12px 28px #3d274318}
+.paper-expand{position:absolute;right:8px;bottom:8px;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#fbf8fde8;border:1px solid #e3daea}
+.paper-expand svg{width:16px;height:16px}
+.paper-preview-caption{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:10px;font-size:.75rem;line-height:1.5;color:#807089}
+.paper-preview-caption>span:last-child{display:flex;gap:5px;color:var(--purple);white-space:nowrap}
+.paper-moments{display:flex;gap:12px;margin-top:22px;max-width:440px}
+.talk-photo{flex:1;min-width:0;max-width:132px;padding:0;border:0;background:transparent;text-align:left;color:#776581;font:500 .75rem/1.4 var(--sans);cursor:zoom-in}
+.talk-photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:8px 2px 8px 2px;border:1px solid #e4dce9;transition:transform .25s ease}
+.talk-photo span{display:block;margin-top:7px}
+.talk-photo:hover img{transform:translateY(-2px)}
+.paper-preview:focus-visible,.talk-photo:focus-visible{outline:2px solid var(--purple);outline-offset:6px;border-radius:4px}
+.publication-dialog .certificate-stage img{max-height:calc(100dvh - 270px)}
+.publication-dialog .certificate-footer>span{max-width:85%;font-size:.875rem}
+@media(max-width:1000px){#publications .publication{grid-template-columns:23px minmax(0,1fr) minmax(200px,30%);gap:18px}#publications .publication h3{font-size:1.3rem}.paper-preview-caption{display:block}.paper-preview-caption>span{display:block}.paper-preview-caption>span:last-child{margin-top:4px}}
+@media(max-width:700px){#publications .publication{grid-template-columns:22px minmax(0,1fr);gap:12px;padding:29px 0}#publications .publication h3{font-size:1.3rem}.paper-preview{grid-column:2;max-width:430px;margin-top:5px}.paper-image-frame{aspect-ratio:1.65;max-height:240px}.paper-preview-caption{display:flex;flex-wrap:wrap}.paper-preview-caption>span:last-child{margin-top:0}.paper-moments{gap:9px;max-width:360px}.publication-dialog .certificate-footer>span{max-width:75%;font-size:.75rem}.publication-dialog .certificate-stage img{max-height:calc(100dvh - 295px)}}
+@media(prefers-reduced-motion:reduce){.paper-preview:hover .paper-image-frame,.talk-photo:hover img{transform:none}}
+@media print{#publications .publication{grid-template-columns:20px minmax(0,1fr) 180px;break-inside:avoid}.paper-preview{grid-column:auto}.paper-image-frame{box-shadow:none}.paper-expand,.paper-preview-caption,.paper-moments,.publication-dialog{display:none}}
+
+#publications .publication-text-only{grid-template-columns:28px minmax(0,1fr)}
+@media(max-width:700px){#publications .publication-text-only{grid-template-columns:22px minmax(0,1fr)}}

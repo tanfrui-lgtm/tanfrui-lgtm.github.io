@@ -16,7 +16,8 @@
       researchLead:'从可证明的控制方法，到感知与行动相结合的智能系统。',
       footer:'唐睿 · 个人学术主页',updated:'最近更新',menu:'打开导航',closeMenu:'关闭导航',
       paperPage:'论文页面',publisherPage:'出版页面 · DOI',video:'演示视频',details:'研究详情',abstract:'研究内容',evidence:'获奖证书',firstAuthor:'第一作者',
-      status:{published:'已发表',accepted:'已录用',conditional:'条件接收'},
+      status:{published:'已发表',accepted:'已录用',conditional:'条件接收',upcoming:'即将推出'},
+      oral:'口头报告',figure:'论文配图',viewFigure:'查看大图',closeFigure:'关闭大图',openFigure:'打开图片',figureLoadError:'图片暂时无法载入，请点击“打开图片”。',
       awardsLead:'代表性竞赛与学术荣誉',allAwards:'其他竞赛与奖学金',
       profileNote:'大数据技术与工程', incomingLabel:'下一站 · 清华大学', expected:'2027 年入学',
       mailLabel:'发送邮件给唐睿',languageLabel:'Switch to English',
@@ -38,7 +39,8 @@
       researchLead:'From control methods with theoretical guarantees to intelligent systems that connect perception and action.',
       footer:'Rui Tang · Academic homepage',updated:'Last updated',menu:'Open navigation',closeMenu:'Close navigation',
       paperPage:'Paper page',publisherPage:'Publisher page · DOI',video:'Demo video',details:'Research details',abstract:'Overview',evidence:'Certificate',firstAuthor:'First author',
-      status:{published:'Published',accepted:'Accepted',conditional:'Conditionally accepted'},
+      status:{published:'Published',accepted:'Accepted',conditional:'Conditionally accepted',upcoming:'Coming soon'},
+      oral:'Oral presentation',figure:'Paper figure',viewFigure:'View figure',closeFigure:'Close figure',openFigure:'Open image',figureLoadError:'The image could not load. Please open the image directly.',
       awardsLead:'Selected competition and academic honors',allAwards:'More competitions & scholarships',
       profileNote:'Big Data Technology and Engineering',incomingLabel:'Next · Tsinghua University',expected:'Expected entry in 2027',
       mailLabel:'Email Rui Tang',languageLabel:'切换至中文',pdfNote:'PDF in Chinese',output:'Outcome',
@@ -88,6 +90,11 @@
         <div class="certificate-toolbar"><div><p id="certificate-kind"></p><h2 id="certificate-title"></h2></div><button type="button" class="certificate-close" aria-label="${c.closeCertificate}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
         <div class="certificate-stage"><img id="certificate-image" alt=""><p id="certificate-error" hidden>${c.imageLoadError}</p></div>
         <div class="certificate-footer"><span id="certificate-award"></span><a id="certificate-original" target="_blank" rel="noopener">${c.original}${arrow}</a></div>
+      </dialog>
+      <dialog class="certificate-dialog publication-dialog" id="publication-dialog" aria-labelledby="publication-dialog-title" aria-describedby="publication-figure-caption">
+        <div class="certificate-toolbar"><div><p id="publication-dialog-venue"></p><h2 id="publication-dialog-title" lang="en"></h2></div><button type="button" class="certificate-close" aria-label="${c.closeFigure}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+        <div class="certificate-stage"><img id="publication-figure-image" alt=""><p id="publication-figure-error" role="status" hidden>${c.figureLoadError}</p></div>
+        <div class="certificate-footer"><span id="publication-figure-caption"></span><a id="publication-figure-original" target="_blank" rel="noopener">${c.openFigure}${arrow}</a></div>
       </dialog>`;
     document.getElementById('language-toggle').addEventListener('click', () => {
       lang = lang === 'zh' ? 'en' : 'zh';
@@ -107,6 +114,7 @@
       document.getElementById('menu-toggle').setAttribute('aria-label',c.menu);
     }));
     bindCertificateViewer(c);
+    bindPublicationViewer(c);
     bindArtDirection();
     if (window.ruiObserver) window.ruiObserver.disconnect();
     window.ruiObserver = new IntersectionObserver(entries=>entries.forEach(entry=>{
@@ -116,7 +124,7 @@
   }
   function renderResearch(c) { return P.research.length ? `<section class="content-section" id="research" aria-labelledby="research-title">${sectionTitle('research',c.research,c.researchEn,'02')}<p class="section-lead">${c.researchLead}</p><div class="research-list">${P.research.map((r,i)=>`<article class="research-item"><div class="research-visual"><img src="${r.image}" alt="${esc(t(r.imageAlt))}" width="800" height="500" loading="lazy"></div><div class="research-content"><div class="research-meta"><span>${esc(t(r.label))}</span><span>${r.period}</span></div><h3>${esc(t(r.title))}</h3><p>${esc(t(r.summary))}</p><p class="research-result">${esc(t(r.result))}</p><details><summary>${c.details}<span aria-hidden="true">+</span></summary><div class="detail-content"><p>${esc(t(r.detail))}</p></div></details></div></article>`).join('')}</div></section>` : ''; }
   function renderPublicationLinks(p,c) {
-    if (p.status === 'conditional') return '';
+    if (p.status === 'conditional' || p.status === 'upcoming') return '';
     const links=[];
     if (p.doi) links.push(`<a href="https://doi.org/${esc(p.doi)}" target="_blank" rel="noopener">${c.publisherPage}${arrow}</a>`);
     else if (p.page) links.push(`<a href="${esc(p.page)}" target="_blank" rel="noopener">${c.paperPage}${arrow}</a>`);
@@ -124,7 +132,49 @@
     return links.length ? `<div class="paper-links">${links.join('')}</div>` : '';
   }
   function renderPublications(c) {
-    return P.publications.length ? `<section class="content-section" id="publications" aria-labelledby="publications-title">${sectionTitle('publications',c.publications,c.publicationsEn,'03')}<ol class="publication-list">${P.publications.map((p,i)=>`<li class="publication"><span class="publication-index">${String(i+1).padStart(2,'0')}</span><div class="publication-body"><div class="publication-meta"><span class="venue">${p.venue}</span><span class="status ${p.status}">${c.status[p.status]}</span></div><h3 lang="en">${esc(p.title)}</h3><p class="authors" lang="en">${p.authors.map(a=>a==='Rui Tang'?`<strong>Rui Tang</strong>`:esc(a)).join(', ')}</p><p class="publication-note">${esc(t(p.note))}</p>${renderPublicationLinks(p,c)}</div></li>`).join('')}</ol></section>` : '';
+    if (!P.publications.length) return '';
+    return `<section class="content-section" id="publications" aria-labelledby="publications-title">${sectionTitle('publications',c.publications,c.publicationsEn,'03')}<ol class="publication-list">${P.publications.map((p,i)=>`
+      <li class="publication${p.figure?'':' publication-text-only'}">
+        <span class="publication-index">${String(i+1).padStart(2,'0')}</span>
+        <div class="publication-body">
+          <div class="publication-meta"><span class="venue">${esc(p.venue)}</span><span class="status ${p.status}">${c.status[p.status]}</span>${p.presentation==='oral'?`<span class="presentation-badge">${c.oral}</span>`:''}</div>
+          <h3 lang="en">${esc(p.title)}</h3>
+          ${p.authors?.length?`<p class="authors" lang="en">${p.authors.map(a=>a==='Rui Tang'?'<strong>Rui Tang</strong>':esc(a)).join(', ')}</p>`:''}
+          <p class="publication-note">${esc(t(p.note))}</p>${renderPublicationLinks(p,c)}
+          ${p.photos?.length?`<div class="paper-moments">${p.photos.map((photo,j)=>`<button type="button" class="talk-photo" data-publication-index="${i}" data-photo-index="${j}" aria-haspopup="dialog" aria-label="${esc(p.venue+' · '+t(photo.label)+' · '+c.viewFigure)}"><img src="${esc(photo.src)}" alt="${esc(t(photo.alt))}" width="160" height="120" loading="lazy"><span>${esc(t(photo.label))}</span></button>`).join('')}</div>`:''}
+        </div>
+        ${p.figure?`<button type="button" class="paper-preview" data-publication-index="${i}" aria-haspopup="dialog" aria-label="${esc(p.title+' · '+c.viewFigure)}"><span class="paper-image-frame"><img src="${esc(p.figure.thumbnail)}" alt="${esc(t(p.figure.alt))}" width="640" height="480" loading="lazy"><span class="paper-expand" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></svg></span></span><span class="paper-preview-caption"><span>${esc(t(p.figure.label))}</span><span>${c.viewFigure}${arrow}</span></span></button>`:''}
+      </li>`).join('')}</ol></section>`;
+  }
+  function bindPublicationViewer(c) {
+    const dialog=document.getElementById('publication-dialog');
+    const image=document.getElementById('publication-figure-image');
+    const error=document.getElementById('publication-figure-error');
+    let trigger;
+    document.querySelectorAll('[data-publication-index]').forEach(button=>button.addEventListener('click',()=>{
+      const paper=P.publications[Number(button.dataset.publicationIndex)];
+      const media=button.dataset.photoIndex===undefined?paper.figure:paper.photos[Number(button.dataset.photoIndex)];
+      trigger=button;
+      document.getElementById('publication-dialog-title').textContent=paper.title;
+      document.getElementById('publication-dialog-venue').textContent=paper.venue+' / '+t(media.label);
+      document.getElementById('publication-figure-caption').textContent=t(media.alt);
+      document.getElementById('publication-figure-original').href=media.src;
+      error.hidden=true;image.hidden=false;
+      image.alt=t(media.alt);image.src=media.src;
+      document.documentElement.classList.add('certificate-open');
+      dialog.showModal();
+    }));
+    image.addEventListener('error',()=>{image.hidden=true;error.hidden=false;});
+    dialog.querySelector('.certificate-close').addEventListener('click',()=>dialog.close());
+    dialog.addEventListener('click',event=>{
+      if(event.target!==dialog)return;
+      const box=dialog.getBoundingClientRect();
+      if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)dialog.close();
+    });
+    dialog.addEventListener('close',()=>{
+      document.documentElement.classList.remove('certificate-open');
+      trigger?.focus({preventScroll:true});
+    });
   }
   function certificateAssets(a) {
     const pdf = /\.pdf$/i.test(a.proof);

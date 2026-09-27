@@ -16,12 +16,12 @@ window.PROFILE = {
       detail:{zh:'MicroVLA 以物理风险图作为训练期的辅助监督，并通过 LoRA 微调联合学习动作与物理表征。MG-VTLA 将压电自感知信号与触觉—语言对比学习结合，采用五步预测、单步执行的闭环策略。两者分别较 π0-FAST 提高 4.0 和 4.7 个百分点。',en:'MicroVLA uses physical risk maps as auxiliary supervision during LoRA fine-tuning. MG-VTLA combines piezoelectric self-sensing with tactile–language contrastive learning, using five-step prediction and single-step execution. Their success rates exceed π0-FAST by 4.0 and 4.7 percentage points, respectively.'}
     },
     {
-      label:{zh:'02 / 多智能体系统',en:'02 / MULTI-AGENT SYSTEMS'},period:'2025 — 2026',image:'assets/swarm.png',
-      imageAlt:{zh:'多无人机集群避障仿真，包括编队轨迹、跟踪误差和控制量',en:'Quadrotor swarm simulation showing formation trajectories, tracking error, and control signals'},
+      label:{zh:'02 / 多智能体系统',en:'02 / MULTI-AGENT SYSTEMS'},period:'2025 — 2026',image:'assets/publications/tase-swarm.webp',
+      imageAlt:{zh:'多无人机闭环穿越仿真：编队形变、跟踪误差、安全间距与推力和倾角',en:'Closed-loop swarm traversal with formation deformation, tracking error, clearance, thrust, and tilt'},
       title:{zh:'让集群协调地穿越复杂环境',en:'Many agents. One coordinated motion.'},
-      summary:{zh:'将分层避碰规划与分布式滑模控制连接起来，在多无人机协同任务中同时考虑轨迹安全、编队形变与控制可跟踪性。',en:'Connecting hierarchical collision avoidance with distributed sliding mode control, so that swarm trajectories account for safety, formation deformation, and tracking feasibility together.'},
+      summary:{zh:'将分布式弹性编队规划与动态扩展滑模控制相结合，让无人机集群在复杂环境中调整队形，并生成兼顾安全间距与控制可执行性的轨迹。',en:'Combining distributed elastic formation planning with dynamic-extension sliding mode control, so quadrotor swarms can adapt their shape while following safe, controller-compatible trajectories.'},
       result:{zh:'16 机、100 次 MATLAB 规划器对照仿真：成功率 99%，跟踪 RMSE 0.117 m。',en:'16 UAVs, 100 MATLAB planner-comparison simulations: 99% success and 0.117 m tracking RMSE.'},
-      detail:{zh:'通过动态扩展处理位置与偏航的混合相对阶，耦合弹性编队、五次 B 样条优化与安全走廊。仿真平均重规划耗时 28.67 ms，并开展噪声、时延与模块消融分析。',en:'Dynamic extension handles mixed relative degrees in position and yaw. Elastic formations, quintic B-splines, and safe corridors are coupled with inter-agent separation constraints. Mean replanning time is 28.67 ms in simulation, with noise, delay, and ablation studies.'}
+      detail:{zh:'基于局部地图与邻机轨迹，利用五次 B 样条优化连接弹性编队、安全走廊与控制可执行性约束。动态扩展处理位置与偏航的混合相对阶，安全间距计入跟踪、估计与通信时延误差；规划器对照仿真的平均规划耗时为 28.67 ms。',en:'Local maps and neighboring trajectories inform a quintic B-spline planner with elastic anchors, safe-flight corridors, and controller-admissibility constraints. Dynamic extension handles mixed relative degrees in position and yaw; separation margins account for tracking, estimation, and communication-delay errors. Mean planning time is 28.67 ms in the planner-comparison simulations.'}
     },
     {
       label:{zh:'03 / 海洋机器人',en:'03 / MARINE ROBOTICS'},period:'2026',image:'assets/ship-prototype.png',
@@ -37,35 +37,57 @@ window.PROFILE = {
       venue:'IEEE TASE · 2026',status:'conditional',
       title:'Dynamic Extension-Based Distributed Sliding Mode Control with Hierarchical Collision Avoidance for Quadrotor Swarms',
       authors:['Rui Tang','Huihui Song','Xinpo Lin','Yue Zhao','Zhuang Liu','Xiang Gao','Jianxing Liu'],
-      note:{zh:'IEEE Transactions on Automation Science and Engineering',en:'IEEE Transactions on Automation Science and Engineering'}
+      note:{zh:'IEEE Transactions on Automation Science and Engineering',en:'IEEE Transactions on Automation Science and Engineering'},
+      figure:{src:'assets/publications/tase-swarm.webp',thumbnail:'assets/publications/tase-swarm-thumb.webp',label:{zh:'集群闭环仿真',en:'Closed-loop swarm flight'},alt:{zh:'集群穿越障碍时的编队形变、跟踪误差、安全间距与推力和倾角',en:'Swarm formation deformation, tracking error, clearance, thrust, and tilt during obstacle traversal'}}
     },
     {
       venue:'IROS · 2026',status:'accepted',
       title:'MicroVLA: A Vision-Language-Action Framework for Microrobotic Navigation Considering Inter-Particle Micro-Force Fields',
       authors:['Haohan Min','Zexin Song','Zhetong Zhang','Rui Tang','Hengchang Zhang','Haoyuan Xue','Jie Xu','Feng Feng','Pingfa Feng'],
       note:{zh:'IEEE/RSJ International Conference on Intelligent Robots and Systems',en:'IEEE/RSJ International Conference on Intelligent Robots and Systems'},
-      video:'assets/microvla-demo.mp4'
+      video:'assets/microvla-demo.mp4',
+      figure:{src:'assets/publications/microvla.webp',thumbnail:'assets/publications/microvla-thumb.webp',label:{zh:'MicroVLA 框架',en:'MicroVLA architecture'},alt:{zh:'MicroVLA 框架：融合视觉、全局坐标与语言指令，通过隐式微力场学习预测微操作动作',en:'MicroVLA architecture combining vision, global coordinates, and language with implicit micro-force field learning for micromanipulation'}}
     },
     {
       venue:'IROS · 2026',status:'accepted',
       title:'MG-VTLA: A Vision–Tactile–Language–Action Framework for Contact-Robust Robotic Micro-Grasping',
       authors:['Jie Xu','Haohan Min','Hengchang Zhang','Zhetong Zhang','Zexin Song','Rui Tang','Jingwei Lv','Haoyuan Xue','Feng Feng','Pingfa Feng'],
       note:{zh:'IEEE/RSJ International Conference on Intelligent Robots and Systems',en:'IEEE/RSJ International Conference on Intelligent Robots and Systems'},
-      video:'assets/mg-vtla-demo.mp4'
+      video:'assets/mg-vtla-demo.mp4',
+      figure:{src:'assets/publications/mg-vtla.webp',thumbnail:'assets/publications/mg-vtla-thumb.webp',label:{zh:'MG-VTLA 框架',en:'MG-VTLA architecture'},alt:{zh:'MG-VTLA 框架：融合显微视觉、触觉与语言，通过语义表征监督和触觉文本对齐预测微操作动作',en:'MG-VTLA architecture integrating microscopy, tactile signals, and language with semantic supervision and tactile-text alignment'}}
     },
     {
       venue:'IEEE TCAS-II · 2026',status:'published',
       title:'Prescribed-Time Synchronization of Second-Order Kuramoto Oscillators',
       authors:['Rui Tang','Huihui Song','Xinpo Lin','Shuaihao Jiang','Xiang Gao','Zhuang Liu','Jianxing Liu'],
       note:{zh:'IEEE Transactions on Circuits and Systems II: Express Briefs',en:'IEEE Transactions on Circuits and Systems II: Express Briefs'},
-      doi:'10.1109/TCSII.2026.3664824'
+      doi:'10.1109/TCSII.2026.3664824',
+      figure:{src:'assets/publications/kuramoto.webp',thumbnail:'assets/publications/kuramoto-thumb.webp',label:{zh:'预设时间同步',en:'Prescribed-time synchronization'},alt:{zh:'二阶 Kuramoto 振子的六联仿真对比：无控制与受控的相位、频率轨迹及同步误差',en:'Six-panel comparison of uncontrolled and controlled phase and frequency trajectories and synchronization errors in second-order Kuramoto oscillators'}}
     },
     {
-      venue:'FASTA · 2026',status:'published',
+      venue:'FASTA · 2026',status:'published',presentation:'oral',
       title:'Robust Fully Actuated Control for Underactuated USVs via Dynamic Extension and Neural Compensation',
       authors:['Rui Tang','Xinpo Lin','Zhiyuan Zhao','Mu Tong','Bowen Yao','Zhuang Liu','Yabin Gao','Huihui Song'],
       note:{zh:'5th Conference on Fully Actuated System Theory and Applications',en:'5th Conference on Fully Actuated System Theory and Applications'},
-      doi:'10.1109/FASTA70174.2026.11549191'
+      doi:'10.1109/FASTA70174.2026.11549191',
+      figure:{src:'assets/publications/usv-control.webp',thumbnail:'assets/publications/usv-control-thumb.webp',label:{zh:'无人船轨迹跟踪',en:'Surface-vessel tracking'},alt:{zh:'无人船在四种扰动强度下的双纽线轨迹跟踪，对比期望轨迹与实际轨迹',en:'Desired and actual surface-vessel trajectories along a lemniscate at four disturbance levels'}},
+      photos:[
+        {src:'assets/conferences/fasta-2026-talk.jpg',label:{zh:'口头报告',en:'Oral presentation'},alt:{zh:'FASTA 2026 口头报告，屏幕展示论文标题与唐睿的发言画面',en:'FASTA 2026 oral presentation, with the paper title and Rui Tang speaking on screen'}},
+        {src:'assets/conferences/fasta-2026-session.jpg',label:{zh:'报告会场',en:'Presentation session'},alt:{zh:'FASTA 2026 报告会场，屏幕展示动态扩展方法',en:'FASTA 2026 presentation session, with dynamic-extension methods on screen'}},
+        {src:'assets/conferences/fasta-2026-conference.jpg',label:{zh:'大会现场',en:'At the conference'},alt:{zh:'FASTA 2026 大会致辞现场',en:'Opening address at FASTA 2026'}}
+      ]
+    },
+    {
+      venue:'IEEE L-CSS · 2026',status:'upcoming',
+      title:'Prescribed-Time Resilient Bipartite Synchronization of Directed Signed Kuramoto Networks Under Bounded Coupling-Layer Disruptions',
+      authors:['Rui Tang','Shuaihao Jiang','Huihui Song','Bumshik Lee','Zhuang Liu','Jianxing Liu','Xinpo Lin'],
+      note:{zh:'IEEE Control Systems Letters',en:'IEEE Control Systems Letters'},
+      figure:{src:'assets/publications/lcss.webp',thumbnail:'assets/publications/lcss-thumb.webp',label:{zh:'双层控制框架',en:'Two-layer control'},alt:{zh:'有向符号 Kuramoto 网络的符号系数模型、常规与共轭模型及统一双层控制架构',en:'Signed-coefficient and normal/conjugate Kuramoto models with a unified two-layer control architecture'}}
+    },
+    {
+      venue:'ICLR · 2027',status:'upcoming',
+      title:'ATLAS-SR: A Protocol-Indexed Structural Atlas for LLM-Guided Symbolic Regression',
+      note:{zh:'International Conference on Learning Representations',en:'International Conference on Learning Representations'}
     }
   ],
   awards: [
