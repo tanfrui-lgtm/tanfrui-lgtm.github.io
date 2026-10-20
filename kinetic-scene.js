@@ -1,46 +1,163 @@
-/* Original kinetic sculpture. Three.js r180, vendored locally under the MIT license.
-   Decorative geometry only; this scene does not represent a research simulation. */
+/* An original trajectory map for navigating the portfolio.
+   HTML links remain functional without WebGL. Three.js r180 is vendored under MIT. */
 (() => {
   'use strict';
 
   const scriptBase = new URL('.', document.currentScript?.src || location.href);
-  let threePromise;
-  let active = null;
-  let mountObserver = null;
   const noop = () => {};
+  let threePromise;
+  let current = null;
 
   function initKineticScene() {
-    const canvas = document.getElementById('kinetic-canvas');
-    if (active?.canvas === canvas && canvas?.isConnected) return active.dispose;
-    if (active) active.dispose();
-    if (!canvas) return noop;
+    const stage = document.querySelector('.kinetic-stage');
+    const map = stage?.querySelector('.scene-map');
+    const canvas = map?.querySelector('#kinetic-canvas');
+    if (current?.map === map && map?.isConnected) return current.dispose;
+    current?.dispose();
+    if (!stage || !map) return noop;
 
-    const stage = canvas.closest('.kinetic-stage');
-    if (!stage) return noop;
+    const nodes = [...map.querySelectorAll('[data-scene-node]')]
+      .sort((a, b) => Number(a.dataset.sceneNode) - Number(b.dataset.sceneNode));
+    const previews = [...stage.querySelectorAll('[data-scene-preview]')];
+    const status = stage.querySelector('[data-scene-status]');
+    if (!nodes.length) return noop;
+
     let disposed = false;
     let releaseScene = noop;
+    let sceneUpdate = noop;
+    let selected = 0;
+    let drag = null;
+    let suppressClickUntil = 0;
+    const removeListeners = [];
+    const pointer = { x: 0, y: 0, active: false };
+    const listen = (target, type, handler, options) => {
+      target?.addEventListener(type, handler, options);
+      removeListeners.push(() => target?.removeEventListener(type, handler, options));
+    };
+
+    function select(index) {
+      const next = (index + nodes.length) % nodes.length;
+      const changed = next !== selected;
+      selected = next;
+      stage.dataset.activeNode = String(selected);
+      nodes.forEach((node, i) => node.classList.toggle('is-active', i === selected));
+      previews.forEach(preview => {
+        const active = Number(preview.dataset.scenePreview) === selected;
+        preview.hidden = !active;
+        preview.classList.toggle('is-active', active);
+      });
+      if (changed && status) {
+        const label = (nodes[selected].querySelector('.scene-node-label') || nodes[selected]).cloneNode(true);
+        label.querySelectorAll('[aria-hidden="true"]').forEach(item => item.remove());
+        status.textContent = label.textContent.trim();
+      }
+      sceneUpdate();
+    }
+
+    function updatePointer(event) {
+      const rect = map.getBoundingClientRect();
+      pointer.x = event.clientX - rect.left;
+      pointer.y = rect.height - (event.clientY - rect.top);
+      pointer.active = true;
+      if (drag?.id === event.pointerId) {
+        const dx = event.clientX - drag.startX;
+        const dy = event.clientY - drag.startY;
+        if (!drag.started && Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) {
+          drag = null;
+          return; // A vertical gesture remains ordinary page scrolling.
+        }
+        if (Math.abs(dx) >= 60 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+          if (!drag.started) {
+            drag.started = true;
+            try { map.setPointerCapture(event.pointerId); } catch (_) { /* Optional. */ }
+            map.classList.add('is-dragging');
+          }
+          select(selected + (dx < 0 ? 1 : -1));
+          drag.startX = event.clientX;
+          drag.startY = event.clientY;
+          suppressClickUntil = performance.now() + 500;
+        }
+        return;
+      }
+      if (event.pointerType === 'touch' || document.activeElement?.matches('[data-scene-node]:focus-visible')) return;
+      let nearest = -1;
+      let distance = Math.min(rect.width * .24, 135);
+      nodes.forEach((node, i) => {
+        const box = (node.querySelector('.scene-dot') || node).getBoundingClientRect();
+        const d = Math.hypot(event.clientX - box.left - box.width / 2, event.clientY - box.top - box.height / 2);
+        if (d < distance) { nearest = i; distance = d; }
+      });
+      if (nearest >= 0 && nearest !== selected) select(nearest);
+    }
+
+    function endDrag(event) {
+      if (!drag || event.pointerId !== drag.id) return;
+      if (drag.started) suppressClickUntil = performance.now() + 350;
+      try {
+        if (map.hasPointerCapture(event.pointerId)) map.releasePointerCapture(event.pointerId);
+      } catch (_) { /* A cancelled touch may already have released capture. */ }
+      drag = null;
+      map.classList.remove('is-dragging');
+    }
+
+    nodes.forEach((node, i) => {
+      listen(node, 'pointerenter', () => { if (!drag?.started) select(i); }, { passive: true });
+      listen(node, 'focus', () => select(i));
+      listen(node, 'keydown', event => {
+        let target;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') target = (i + 1) % nodes.length;
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') target = (i - 1 + nodes.length) % nodes.length;
+        if (event.key === 'Home') target = 0;
+        if (event.key === 'End') target = nodes.length - 1;
+        if (target === undefined) return;
+        event.preventDefault();
+        select(target);
+        nodes[target].focus({ preventScroll: true });
+      });
+    });
+    listen(stage.querySelector('.scene-prev'), 'click', () => select(selected - 1));
+    listen(stage.querySelector('.scene-next'), 'click', () => select(selected + 1));
+    listen(map, 'pointermove', updatePointer, { passive: true });
+    listen(map, 'pointerleave', () => { pointer.active = false; }, { passive: true });
+    listen(map, 'pointerdown', event => {
+      if (event.button !== 0 || event.target.closest('a,button,input,select,textarea')) return;
+      drag = { id: event.pointerId, startX: event.clientX, startY: event.clientY, started: false };
+    }, { passive: true });
+    listen(window, 'pointerup', endDrag, { passive: true });
+    listen(window, 'pointercancel', endDrag, { passive: true });
+    listen(map, 'click', event => {
+      if (performance.now() >= suppressClickUntil) return;
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
+    select(0);
+
     const instance = {
-      canvas,
+      map,
       dispose() {
         if (disposed) return;
         disposed = true;
         releaseScene();
+        removeListeners.forEach(remove => remove());
         stage.classList.remove('kinetic-ready');
-        if (active === instance) active = null;
+        if (current === instance) current = null;
       }
     };
-    active = instance;
-    stage.dataset.sceneState = 'loading';
+    current = instance;
+    stage.dataset.sceneState = canvas ? 'loading' : 'fallback';
+    if (!canvas) return instance.dispose;
 
-    // Keep the CSS sculpture visible until the first successful WebGL frame.
     threePromise ||= import(new URL('assets/vendor/three-0.180.0/three.module.min.js', scriptBase).href);
-    threePromise.then(THREE => {
+    threePromise.then(T => {
       if (disposed || !canvas.isConnected) return;
       try {
-        releaseScene = buildScene(THREE, canvas, stage);
+        const scene = buildTrajectoryScene(T, canvas, stage, map, nodes, pointer, () => selected);
+        releaseScene = scene.dispose;
+        sceneUpdate = scene.update;
       } catch (error) {
+        stage.classList.remove('kinetic-ready');
         stage.dataset.sceneState = 'fallback';
-        console.warn('Kinetic sculpture: using the static fallback.', error?.message || error);
+        console.warn('Trajectory map: the accessible navigation remains available.', error?.message || error);
       }
     }).catch(() => {
       if (!disposed) stage.dataset.sceneState = 'fallback';
@@ -48,218 +165,239 @@
     return instance.dispose;
   }
 
-  function buildScene(T, canvas, stage) {
-    const media = matchMedia('(prefers-reduced-motion: reduce)');
-    const compact = matchMedia('(max-width: 760px)').matches;
+  function buildTrajectoryScene(T, canvas, stage, map, nodes, pointer, selectedIndex) {
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let manualPaused = document.documentElement.dataset.motionPaused === 'true';
     let stopped = false;
     let visible = true;
-    let manualPaused = document.documentElement.dataset.motionPaused === 'true';
-    let lastFrame = 0;
-    let time = 0;
     let running = false;
+    let lastFrame = 0;
+    let elapsed = 0;
+    let width = 1;
+    let height = 1;
     let renderer;
+    let resizeObserver;
+    let intersectionObserver;
     const geometries = new Set();
     const materials = new Set();
-    const textures = new Set();
-    let environmentTarget = null;
-    let resizeObserver = null;
-    let visibilityObserver = null;
     const removeListeners = [];
-    const trackGeometry = geometry => (geometries.add(geometry), geometry);
-    const trackMaterial = material => (materials.add(material), material);
-    const listen = (target, event, callback, options) => {
-      target.addEventListener(event, callback, options);
-      removeListeners.push(() => target.removeEventListener(event, callback, options));
-    };
     const scene = new T.Scene();
-    const camera = new T.OrthographicCamera(-4, 4, 3, -3, .1, 50);
-    camera.position.set(4.4, 3.1, 8.8);
-    camera.lookAt(0, .12, 0);
+    const camera = new T.OrthographicCamera(0, 1, 1, 0, .1, 100);
+    camera.position.z = 20;
+    const trackGeometry = value => (geometries.add(value), value);
+    const trackMaterial = value => (materials.add(value), value);
+    const listen = (target, type, handler, options) => {
+      target.addEventListener(type, handler, options);
+      removeListeners.push(() => target.removeEventListener(type, handler, options));
+    };
+    const paused = () => reduceMotion.matches || manualPaused;
 
-    function cleanup() {
+    function dispose() {
       if (stopped) return;
       stopped = true;
       renderer?.setAnimationLoop(null);
       resizeObserver?.disconnect();
-      visibilityObserver?.disconnect();
+      intersectionObserver?.disconnect();
       removeListeners.forEach(remove => remove());
-      scene.traverse(object => object.shadow?.dispose?.());
-      environmentTarget?.dispose();
       geometries.forEach(geometry => geometry.dispose());
       materials.forEach(material => material.dispose());
-      textures.forEach(texture => texture.dispose());
       renderer?.dispose();
       renderer?.forceContextLoss();
     }
 
     try {
-      renderer = new T.WebGLRenderer({
-        canvas, alpha: true, antialias: true, powerPreference: 'low-power'
-      });
+      renderer = new T.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
       renderer.setClearColor(0x000000, 0);
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, compact ? 1.4 : 1.7));
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
       renderer.outputColorSpace = T.SRGBColorSpace;
-      renderer.toneMapping = T.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.08;
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = T.PCFSoftShadowMap;
 
-      // A generated studio environment supplies broad highlights without an HDR image.
-      const studio = new T.Scene();
-      studio.background = new T.Color(0xc8cbd1);
-      const studioGeometry = new T.PlaneGeometry(1, 1);
-      const studioMaterials = [];
-      function softbox(position, scale, brightness) {
-        const material = new T.MeshBasicMaterial({
-          color: new T.Color().setScalar(brightness), side: T.DoubleSide
-        });
-        studioMaterials.push(material);
-        const panel = new T.Mesh(studioGeometry, material);
-        panel.position.set(...position);
-        panel.scale.set(...scale, 1);
-        panel.lookAt(0, 0, 0);
-        studio.add(panel);
+      const gridGeometry = trackGeometry(new T.BufferGeometry());
+      const grid = new T.Points(gridGeometry, trackMaterial(new T.PointsMaterial({
+        color: 0x7b91b5, size: 1.45, sizeAttenuation: false, transparent: true, opacity: .26, depthTest: false
+      })));
+      grid.renderOrder = -2;
+      scene.add(grid);
+
+      function line(points, material) {
+        const geometry = trackGeometry(new T.BufferGeometry().setFromPoints(points));
+        const shape = new T.Line(geometry, material);
+        scene.add(shape);
+        return shape;
       }
-      softbox([-4, 5, 4], [4, 6], 5);
-      softbox([5, 2, -2], [3, 5], 3);
-      softbox([0, 6, -1], [5, 4], 2);
-      const pmrem = new T.PMREMGenerator(renderer);
-      environmentTarget = pmrem.fromScene(studio, .06);
-      scene.environment = environmentTarget.texture;
-      pmrem.dispose();
-      studioGeometry.dispose();
-      studioMaterials.forEach(material => material.dispose());
-
-      scene.add(new T.HemisphereLight(0xf4f5ff, 0x8b909e, 1.15));
-      const key = new T.DirectionalLight(0xffffff, 3.3);
-      key.position.set(-3.5, 6.5, 5);
-      key.castShadow = true;
-      key.shadow.mapSize.set(compact ? 1024 : 2048, compact ? 1024 : 2048);
-      Object.assign(key.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, near: .5, far: 20 });
-      key.shadow.bias = -.0002;
-      key.shadow.normalBias = .035;
-      key.shadow.radius = 4;
-      scene.add(key);
-      const fill = new T.DirectionalLight(0xc7d4ff, .8);
-      fill.position.set(4, 2, -4);
-      scene.add(fill);
-
-      const graphite = trackMaterial(new T.MeshPhysicalMaterial({
-        color: 0x151b25, roughness: .26, metalness: .26, clearcoat: .8,
-        clearcoatRoughness: .2, envMapIntensity: .8
-      }));
-      const cobalt = trackMaterial(new T.MeshPhysicalMaterial({
-        color: 0x163bc2, roughness: .23, metalness: .18, clearcoat: 1,
-        clearcoatRoughness: .16, envMapIntensity: .75
-      }));
-      const ivory = trackMaterial(new T.MeshPhysicalMaterial({
-        color: 0xf3f0e8, roughness: .28, metalness: .04, clearcoat: .75,
-        clearcoatRoughness: .24, envMapIntensity: .65
-      }));
-      const sphereGeometry = trackGeometry(new T.SphereGeometry(1, 48, 32));
-      const bodies = [];
-      function body(geometry, material, scale, position, rotation, radius, seed) {
-        const mesh = new T.Mesh(geometry, material);
-        mesh.scale.set(...scale);
-        mesh.position.set(...position);
-        mesh.rotation.set(...rotation);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        scene.add(mesh);
-        const item = {
-          mesh, home: mesh.position.clone(), rotation: mesh.rotation.clone(),
-          velocity: new T.Vector3(), radius, seed
+      const routes = nodes.map((_, i) => {
+        const material = trackMaterial(new T.LineBasicMaterial({
+          color: 0x244be2, transparent: true, opacity: .25, depthTest: false
+        }));
+        const geometry = trackGeometry(new T.BufferGeometry());
+        geometry.setAttribute('position', new T.BufferAttribute(new Float32Array(49 * 3), 3));
+        const shape = new T.Line(geometry, material);
+        scene.add(shape);
+        const referenceMaterial = trackMaterial(new T.LineDashedMaterial({
+          color: 0x49607e, transparent: true, opacity: .17, dashSize: 3, gapSize: 7, depthTest: false
+        }));
+        const reference = line([new T.Vector3(), new T.Vector3()], referenceMaterial);
+        reference.renderOrder = -1;
+        return {
+          start: new T.Vector2(), end: new T.Vector2(), home: new T.Vector2(),
+          control: new T.Vector2(), velocity: new T.Vector2(), material, shape, reference, index: i
         };
-        bodies.push(item);
-        return item;
-      }
-
-      // A stable, asymmetric arrangement: control ring, pearl, actuator and satellite.
-      body(trackGeometry(new T.TorusGeometry(1.14, .34, 32, 96)), cobalt,
-        [1, 1, 1], [.48, .14, -.3], [.12, -.23, -.36], 0, .4);
-      body(sphereGeometry, ivory,
-        [.83, .83, .83], [-.91, -.61, .85], [0, 0, 0], .73, 1.8);
-      body(trackGeometry(new T.CapsuleGeometry(.43, .76, 12, 32)), graphite,
-        [1, 1, 1], [-1.49, -.48, -.6], [.1, -.4, .7], .58, 2.9);
-      body(sphereGeometry, graphite,
-        [.55, .55, .55], [1.5, -.88, .88], [0, 0, 0], .5, 4.1);
-      body(sphereGeometry, ivory,
-        [.28, .28, .28], [1.59, 1.26, -.26], [0, 0, 0], .25, 5.5);
-
-      const floorHeight = -1.46;
-      const floor = new T.Mesh(
-        trackGeometry(new T.PlaneGeometry(30, 30)),
-        trackMaterial(new T.ShadowMaterial({ color: 0x202b45, opacity: .17 }))
-      );
-      floor.rotation.x = -Math.PI / 2;
-      floor.position.y = floorHeight;
-      floor.receiveShadow = true;
-      scene.add(floor);
-
-      // Feathered contact shadows complement the physically lit cast shadows.
-      const shadowCanvas = document.createElement('canvas');
-      shadowCanvas.width = shadowCanvas.height = 128;
-      const context = shadowCanvas.getContext('2d');
-      const gradient = context.createRadialGradient(64, 64, 1, 64, 64, 62);
-      gradient.addColorStop(0, 'rgba(18,28,48,.30)');
-      gradient.addColorStop(.28, 'rgba(18,28,48,.17)');
-      gradient.addColorStop(.65, 'rgba(18,28,48,.045)');
-      gradient.addColorStop(1, 'rgba(18,28,48,0)');
-      context.fillStyle = gradient;
-      context.fillRect(0, 0, 128, 128);
-      const shadowTexture = new T.CanvasTexture(shadowCanvas);
-      textures.add(shadowTexture);
-      const contactGeometry = trackGeometry(new T.PlaneGeometry(1, 1));
-      bodies.forEach((item, i) => {
-        const shadow = new T.Mesh(contactGeometry, trackMaterial(new T.MeshBasicMaterial({
-          map: shadowTexture, transparent: true, depthWrite: false,
-          opacity: i === 4 ? .24 : .75, toneMapped: false
-        })));
-        shadow.rotation.x = -Math.PI / 2;
-        shadow.scale.set(i === 0 ? 3.2 : 2.5, i === 0 ? 2.4 : 2.2, 1);
-        shadow.position.set(item.home.x, floorHeight + .012 + i * .001, item.home.z);
-        item.shadow = shadow;
-        scene.add(shadow);
       });
 
-      const pointer = { active: false, x: 0, y: 0, expiry: 0 };
-      const pointerNdc = new T.Vector2();
-      const raycaster = new T.Raycaster();
-      const pointerPlane = new T.Plane(new T.Vector3(0, 0, 1), -.55);
-      const pointerWorld = new T.Vector3();
-      const delta = new T.Vector3();
-      const force = new T.Vector3();
-      const paused = () => media.matches || manualPaused;
+      const markers = nodes.map(() => {
+        const points = [];
+        for (let i = 0; i <= 48; i++) {
+          const angle = i / 48 * Math.PI * 2;
+          points.push(new T.Vector3(Math.cos(angle) * 16, Math.sin(angle) * 16, 0));
+        }
+        const material = trackMaterial(new T.LineBasicMaterial({
+          color: 0x244be2, transparent: true, opacity: .16, depthTest: false
+        }));
+        return line(points, material);
+      });
 
+      function agentMarker(seed) {
+        const group = new T.Group();
+        const material = trackMaterial(new T.LineBasicMaterial({
+          color: seed ? 0x5a749e : 0x244be2, transparent: true, opacity: seed ? .7 : .95, depthTest: false
+        }));
+        const parts = [];
+        const p = (x, y) => new T.Vector3(x, y, 1);
+        // A heading marker represents an agent's decision along a trajectory.
+        // Its pointed hull and short wake remain neutral across research domains.
+        const outline = [[0, 11], [-6, -7], [0, -3], [6, -7], [0, 11]];
+        for (let i = 0; i < outline.length - 1; i++) {
+          parts.push(p(...outline[i]), p(...outline[i + 1]));
+        }
+        parts.push(p(-3, -11), p(-3, -16), p(3, -11), p(3, -16));
+        group.add(new T.LineSegments(trackGeometry(new T.BufferGeometry().setFromPoints(parts)), material));
+        const hull = new T.Shape();
+        hull.moveTo(0, 8);
+        hull.lineTo(-3.7, -4);
+        hull.lineTo(0, -1.6);
+        hull.lineTo(3.7, -4);
+        hull.closePath();
+        const body = new T.Mesh(trackGeometry(new T.ShapeGeometry(hull)), trackMaterial(
+          new T.MeshBasicMaterial({ color: seed ? 0x607ba8 : 0x244be2, transparent: true, opacity: .7, depthTest: false })
+        ));
+        group.add(body);
+        group.scale.setScalar(seed ? .7 : 1);
+        group.renderOrder = 3;
+        scene.add(group);
+        return { group, seed };
+      }
+      const agents = [agentMarker(0), agentMarker(1), agentMarker(2)];
+      const point = new T.Vector2();
+      const tangent = new T.Vector2();
+      const force = new T.Vector2();
+      const delta = new T.Vector2();
+
+      function sample(route, t, out) {
+        const s = 1 - t;
+        return out.set(
+          s * s * route.start.x + 2 * s * t * route.control.x + t * t * route.end.x,
+          s * s * route.start.y + 2 * s * t * route.control.y + t * t * route.end.y
+        );
+      }
+      function updateGeometry() {
+        const selected = selectedIndex();
+        routes.forEach(route => {
+          const position = route.shape.geometry.getAttribute('position');
+          for (let i = 0; i < 49; i++) {
+            sample(route, i / 48, point);
+            position.setXYZ(i, point.x, point.y, 0);
+          }
+          position.needsUpdate = true;
+          route.shape.geometry.computeBoundingSphere();
+          route.material.opacity = (route.index + 1) % nodes.length === selected ? .83 : .27;
+        });
+        markers.forEach((marker, i) => {
+          marker.material.opacity = i === selected ? .46 : .13;
+          marker.scale.setScalar(i === selected ? 1.12 + Math.sin(elapsed * 1.8) * .05 : 1);
+        });
+        // A small formation follows the loop. The route stays anchored to usable links.
+        agents.forEach(({ group, seed }) => {
+          const progress = (elapsed * .045 + .14 + seed * .055) % nodes.length;
+          const index = Math.floor(progress);
+          const t = progress - index;
+          const route = routes[index];
+          sample(route, t, point);
+          tangent.set(
+            2 * (1 - t) * (route.control.x - route.start.x) + 2 * t * (route.end.x - route.control.x),
+            2 * (1 - t) * (route.control.y - route.start.y) + 2 * t * (route.end.y - route.control.y)
+          );
+          group.position.set(point.x, point.y, 2);
+          group.rotation.z = Math.atan2(tangent.y, tangent.x) - Math.PI / 2;
+        });
+      }
       function render() {
         if (stopped || !canvas.isConnected) return;
+        updateGeometry();
         renderer.render(scene, camera);
         stage.classList.add('kinetic-ready');
         stage.dataset.sceneState = paused() ? 'static' : 'ready';
       }
       function resize() {
         if (stopped) return;
-        const { width, height } = stage.getBoundingClientRect();
-        if (!width || !height) return;
-        const aspect = width / height;
-        const viewHeight = aspect < 1 ? 6.25 : 5.1;
-        camera.left = -viewHeight * aspect / 2;
-        camera.right = viewHeight * aspect / 2;
-        camera.top = viewHeight / 2;
-        camera.bottom = -viewHeight / 2;
-        camera.updateProjectionMatrix();
+        const rect = map.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        width = rect.width;
+        height = rect.height;
         renderer.setSize(width, height, false);
+        camera.right = width;
+        camera.top = height;
+        camera.updateProjectionMatrix();
+        const centers = nodes.map(node => {
+          const box = (node.querySelector('.scene-dot') || node).getBoundingClientRect();
+          return new T.Vector2(box.left + box.width / 2 - rect.left, height - (box.top + box.height / 2 - rect.top));
+        });
+        const center = centers.reduce((sum, value) => sum.add(value), new T.Vector2()).multiplyScalar(1 / centers.length);
+        routes.forEach((route, i) => {
+          route.start.copy(centers[i]);
+          route.end.copy(centers[(i + 1) % centers.length]);
+          route.home.copy(route.start).add(route.end).multiplyScalar(.5);
+          delta.copy(route.home).sub(center).normalize().multiplyScalar(Math.min(width, height) * .085);
+          route.home.add(delta);
+          route.control.copy(route.home);
+          route.velocity.set(0, 0);
+          const vertices = route.reference.geometry.getAttribute('position');
+          vertices.setXYZ(0, route.start.x, route.start.y, -.1);
+          vertices.setXYZ(1, route.end.x, route.end.y, -.1);
+          vertices.needsUpdate = true;
+          route.reference.computeLineDistances();
+          route.reference.geometry.computeBoundingSphere();
+          markers[i].position.set(centers[i].x, centers[i].y, 0);
+        });
+        const dots = [];
+        for (let x = 16; x < width; x += 28) {
+          for (let y = 16; y < height; y += 28) dots.push(x, y, -1);
+        }
+        gridGeometry.setAttribute('position', new T.Float32BufferAttribute(dots, 3));
+        gridGeometry.computeBoundingSphere();
         render();
       }
-      function updatePointer(event) {
-        if (paused() || event.target.closest?.('button,a,input,select')) return;
-        const rect = stage.getBoundingClientRect();
-        pointer.x = (event.clientX - rect.left) / rect.width * 2 - 1;
-        pointer.y = -(event.clientY - rect.top) / rect.height * 2 + 1;
-        pointer.active = true;
-        pointer.expiry = performance.now() + (event.pointerType === 'touch' ? 450 : 2000);
+      function animate(now) {
+        if (stopped) return;
+        if (lastFrame && now - lastFrame < 31) return;
+        const dt = Math.min(lastFrame ? (now - lastFrame) / 1000 : 1 / 30, .06);
+        lastFrame = now;
+        elapsed += dt;
+        routes.forEach(route => {
+          force.copy(route.home).sub(route.control).multiplyScalar(12);
+          if (pointer.active) {
+            delta.set(route.control.x - pointer.x, route.control.y - pointer.y);
+            const distance = Math.max(delta.length(), 1);
+            const radius = Math.min(width, height) * .45;
+            if (distance < radius) {
+              delta.multiplyScalar(1 / distance);
+              force.addScaledVector(delta, (1 - distance / radius) ** 2 * 540);
+            }
+          }
+          route.velocity.addScaledVector(force, dt).multiplyScalar(Math.exp(-4.6 * dt));
+          route.velocity.clampLength(0, 90);
+          route.control.addScaledVector(route.velocity, dt);
+        });
+        render();
       }
-      function leavePointer() { pointer.active = false; }
       function syncLoop() {
         if (stopped) return;
         const shouldRun = visible && !document.hidden && !paused();
@@ -268,113 +406,39 @@
           lastFrame = 0;
           renderer.setAnimationLoop(shouldRun ? animate : null);
         }
-        if (!shouldRun) render();
-      }
-      function animate(now) {
-        if (stopped || !canvas.isConnected) return;
-        // Cap at 45 fps on desktop and 30 fps on narrow devices.
-        if (lastFrame && now - lastFrame < (compact ? 32 : 21)) return;
-        const dt = Math.min(lastFrame ? (now - lastFrame) / 1000 : 1 / 60, .04);
-        lastFrame = now;
-        time += dt;
-        const interacting = pointer.active && now < pointer.expiry;
-        if (interacting) {
-          pointerNdc.set(pointer.x, pointer.y);
-          raycaster.setFromCamera(pointerNdc, camera);
-          raycaster.ray.intersectPlane(pointerPlane, pointerWorld);
-        }
-        bodies.forEach((item, i) => {
-          const position = item.mesh.position;
-          force.copy(item.home).sub(position).multiplyScalar(9);
-          force.y += Math.sin(time * .65 + item.seed) * .13;
-          if (interacting) {
-            delta.copy(position).sub(pointerWorld);
-            const distance = Math.max(delta.length(), .16);
-            if (distance < 2.15) {
-              delta.divideScalar(distance);
-              force.addScaledVector(delta, Math.pow(1 - distance / 2.15, 2) * 15);
-            }
-          }
-          item.velocity.addScaledVector(force, dt).multiplyScalar(Math.exp(-3.3 * dt));
-          item.velocity.clampLength(0, 1.9);
-          position.addScaledVector(item.velocity, dt);
-          position.x = T.MathUtils.clamp(position.x, item.home.x - .65, item.home.x + .65);
-          position.y = T.MathUtils.clamp(position.y, item.home.y - .08, item.home.y + .65);
-          position.z = T.MathUtils.clamp(position.z, item.home.z - .3, item.home.z + .5);
-          item.mesh.rotation.x = item.rotation.x + item.velocity.z * .08;
-          item.mesh.rotation.y = item.rotation.y + Math.sin(time * .28 + item.seed) * .035;
-          item.mesh.rotation.z = item.rotation.z + (position.x - item.home.x) * -.2;
-          item.shadow.position.x = position.x;
-          item.shadow.position.z = position.z;
-          if (i !== 4) item.shadow.material.opacity = Math.max(.3, .75 - (position.y - item.home.y) * .5);
-        });
-        // Short-range separation keeps the three convex pieces from passing through each other.
-        for (let i = 1; i < bodies.length; i++) {
-          for (let j = i + 1; j < bodies.length; j++) {
-            const a = bodies[i], b = bodies[j];
-            delta.copy(a.mesh.position).sub(b.mesh.position);
-            const distance = delta.length();
-            const minimum = a.radius + b.radius;
-            if (distance > .001 && distance < minimum) {
-              delta.multiplyScalar((minimum - distance) * .48 / distance);
-              a.mesh.position.add(delta);
-              b.mesh.position.sub(delta);
-              a.velocity.addScaledVector(delta, 1.5);
-              b.velocity.addScaledVector(delta, -1.5);
-            }
-          }
-        }
         render();
       }
-      function motionChange(event) {
+      listen(window, 'portfolio-motion-change', event => {
         manualPaused = typeof event.detail?.paused === 'boolean'
           ? event.detail.paused
           : document.documentElement.dataset.motionPaused === 'true';
         pointer.active = false;
         syncLoop();
-      }
-      listen(stage, 'pointermove', updatePointer, { passive: true });
-      listen(stage, 'pointerdown', updatePointer, { passive: true });
-      listen(stage, 'pointerleave', leavePointer, { passive: true });
-      listen(window, 'portfolio-motion-change', motionChange);
+      });
       listen(document, 'visibilitychange', syncLoop);
-      listen(media, 'change', syncLoop);
+      listen(reduceMotion, 'change', syncLoop);
       listen(canvas, 'webglcontextlost', () => {
-        cleanup();
+        dispose();
         stage.classList.remove('kinetic-ready');
         stage.dataset.sceneState = 'fallback';
       });
       resizeObserver = new ResizeObserver(resize);
-      resizeObserver.observe(stage);
-      visibilityObserver = new IntersectionObserver(entries => {
+      resizeObserver.observe(map);
+      nodes.forEach(node => resizeObserver.observe(node));
+      intersectionObserver = new IntersectionObserver(entries => {
         visible = entries[0]?.isIntersecting ?? false;
         syncLoop();
       }, { rootMargin: '50px' });
-      visibilityObserver.observe(stage);
+      intersectionObserver.observe(map);
+      document.fonts?.ready.then(() => { if (!stopped) resize(); });
       resize();
       syncLoop();
-      return cleanup;
+      return { dispose, update: render };
     } catch (error) {
-      cleanup();
+      dispose();
       throw error;
     }
   }
 
   window.initKineticScene = initKineticScene;
-  function mount() {
-    initKineticScene();
-    const app = document.getElementById('app');
-    if (app && !mountObserver) {
-      mountObserver = new MutationObserver(() => {
-        const canvas = document.getElementById('kinetic-canvas');
-        if (canvas !== active?.canvas) initKineticScene();
-      });
-      mountObserver.observe(app, { childList: true, subtree: true });
-    }
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mount, { once: true });
-  } else {
-    mount();
-  }
 })();

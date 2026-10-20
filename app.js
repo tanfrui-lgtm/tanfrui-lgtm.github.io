@@ -133,13 +133,24 @@
   function renderHome(c) {
     return `<section class="opening-section" id="intro" aria-labelledby="intro-title">
       <div class="opening-topline"><span>${c.portfolioLabel}</span><span>RUI TANG / 2026</span></div>
-      <div class="hero-grid">
-        <div class="identity-card">
-          <div class="identity-top"><span class="identity-cross" aria-hidden="true">✳</span><span>${lang==='en'?'唐睿':'Rui Tang'}</span></div>
-          <div class="identity-main"><h1 id="intro-title">${lang==='en'?'Rui<br>Tang.':'唐睿'}</h1><p>${c.heroNote}</p></div>
-          <div class="identity-bottom"><img src="assets/portrait.jpg" alt="${lang==='zh'?'唐睿的个人照片':'Portrait of Rui Tang'}" width="413" height="579" fetchpriority="high"><div><a href="#research">${c.explore}${arrow}</a><a href="#contact">${c.contact}${arrow}</a></div></div>
+      <div class="intro-grid">
+        <div class="intro-person">
+          <div class="intro-portrait"><img src="assets/portrait.jpg" alt="${lang==='zh'?'唐睿的个人照片':'Portrait of Rui Tang'}" width="413" height="579" fetchpriority="high"><span>${c.heroAffiliation}</span></div>
+          <div class="intro-identity"><p class="intro-field">${c.heroField}</p><h1 id="intro-title">${c.name}<span>${c.otherName}</span></h1><p class="intro-bio">${c.heroBio}</p></div>
+          <div class="intro-next"><span aria-hidden="true">↗</span><p>${c.heroNext}<small>${c.heroProgram}</small></p></div>
+          <a class="text-link intro-contact" href="#contact">${c.contact}${arrow}</a>
         </div>
-        <div class="kinetic-stage"><canvas id="kinetic-canvas" aria-hidden="true"></canvas><div class="kinetic-fallback" aria-hidden="true"><i></i><i></i><i></i></div><div class="kinetic-topline"><span>ROBOTICS / LEARNING / CONTROL</span><span aria-hidden="true">＋</span></div><div class="kinetic-bottomline"><span>${c.heroCaption}</span><button id="motion-toggle" type="button" aria-pressed="false" data-pause="${c.pauseMotion}" data-resume="${c.resumeMotion}"><span aria-hidden="true">Ⅱ</span><span>${c.pauseMotion}</span></button></div><span class="kinetic-hint">${c.interactionHint}</span></div>
+        <div class="kinetic-stage">
+          <div class="scene-header"><div><p>${c.heroCaption}</p><h2>${c.mapTitle}</h2></div><span class="scene-symbol" aria-hidden="true">↗</span></div>
+          <nav class="scene-map" aria-label="${c.mapLabel}">
+            <canvas id="kinetic-canvas" aria-hidden="true"></canvas>
+            <svg class="map-fallback" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M22 27 Q48 2 73 19 T82 64 Q70 95 44 77 T16 64 Q0 42 22 27 M22 27 Q65 32 82 64 M73 19 Q62 51 44 77 M16 64 Q45 28 73 19"/></svg>
+            ${Q.destinations.map((d,i)=>`<a class="scene-node${i===0?' is-active':''}" data-scene-node="${i}" href="${d.target.startsWith('#')?d.target:pageUrl(d.target)}"><span class="scene-dot" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="scene-node-label">${t(d.label)}<span aria-hidden="true">↗</span></span></a>`).join('')}
+          </nav>
+          <div class="scene-preview-stack">${Q.destinations.map((d,i)=>`<a class="scene-preview${i===0?' is-active':''}" data-scene-preview="${i}" href="${d.target.startsWith('#')?d.target:pageUrl(d.target)}" ${i?'hidden':''}><img src="${d.image}" alt="" width="160" height="120"><div><span>${String(i+1).padStart(2,'0')} / ${t(d.label)}</span><h3>${t(d.title)}</h3><p>${t(d.description)}</p></div><span class="scene-open" aria-hidden="true">↗</span></a>`).join('')}</div>
+          <span class="sr-only" data-scene-status aria-live="polite" aria-atomic="true"></span>
+          <div class="scene-controls"><div><button class="scene-prev" type="button" aria-label="${c.previousPath}">←</button><button class="scene-next" type="button" aria-label="${c.nextPath}">→</button></div><span class="scene-hint">${c.interactionHint}</span><button id="motion-toggle" type="button" aria-pressed="false" data-pause="${c.pauseMotion}" data-resume="${c.resumeMotion}"><span aria-hidden="true">Ⅱ</span><span>${c.pauseMotion}</span></button></div>
+        </div>
       </div>
       <a class="scroll-cue" href="#statement"><span>${c.scrollCue}</span><span aria-hidden="true">↓</span></a>
     </section>
@@ -147,21 +158,22 @@
       ${renderResearch(c)}
       ${renderMoments(c)}
       <section class="papers-gateway" id="publications" aria-labelledby="papers-gateway-title"><div><h2 id="papers-gateway-title">${c.papersTitle}</h2><p>${c.papersText}</p></div><a class="text-link" href="${pageUrl('publications.html')}">${c.allPapers}${arrow}</a></section>
-      <section class="content-section about-story" id="about" aria-labelledby="about-title">${sectionTitle('about',c.aboutTitle,c.aboutEn,'03')}<div><p>${c.aboutText}</p><p>${c.aboutNext}</p><details class="background-details" id="education"><summary>${c.background}</summary><div class="education-list">${P.education.map(item=>`<article class="education-item"><div class="education-info"><h3>${esc(t(item.school))}</h3><span class="period">${item.period}</span><p class="degree">${esc(t(item.degree))} · ${esc(t(item.unit))}</p></div></article>`).join('')}</div></details></div></section>
+      <section class="content-section about-story" id="about" aria-labelledby="about-title">${sectionTitle('about',c.aboutTitle,c.aboutEn,'03')}<div><p>${c.aboutText}</p><p>${c.aboutConnection}</p><p>${c.aboutNext}</p><details class="background-details" id="education"><summary>${c.background}</summary><div class="education-list">${P.education.map(item=>`<article class="education-item"><div class="education-info"><h3>${esc(t(item.school))}</h3><span class="period">${item.period}</span><p class="degree">${esc(t(item.degree))} · ${esc(t(item.unit))}</p></div></article>`).join('')}</div></details></div></section>
       ${renderAwards(c,true)}
       <section class="contact-section" id="contact" aria-labelledby="contact-title"><h2 id="contact-title">${c.contactTitle}</h2><p>${c.contactText}</p><a class="text-link" href="mailto:${P.email}">${P.email}${arrow}</a></section>`;
   }
   function renderResearch(c) {
-    const media=(r,w,i,stage)=>`<div class="${stage?'stage-panel':'chapter-media'}${i===0?' is-active':''}" ${stage?`data-work-media="${i}"`:''}>${w.video?`<video controls muted playsinline loop preload="none" poster="${r.image}" aria-label="${esc(t(r.title)+' · '+c.watch)}" data-work-video="${i}"><source src="${w.video}" type="video/mp4"><a href="${w.video}">${c.watch}</a></video>`:`<img src="${r.image}" alt="${esc(t(r.imageAlt))}" width="1000" height="750" loading="lazy">`}<div class="media-caption"><span>${String(i+1).padStart(2,'0')} / 03</span><span>${esc(t(r.label).split(' / ').pop())}</span><span aria-hidden="true">↗</span></div></div>`;
-    return `<section class="research-section" id="research" aria-labelledby="research-title">${sectionTitle('research',c.research,c.researchEn,'01')}<div class="research-intro"><p>${c.researchLead}</p><div class="work-jumps" aria-label="${c.workIndex}">${Q.works.map((w,i)=>`<a href="#work-${w.id}" data-work-jump="${i}" aria-label="${esc(t(P.research[i].title))}">${String(i+1).padStart(2,'0')}</a>`).join('')}</div></div><div class="work-gallery"><div class="work-stage" aria-label="${c.playLabel}">${P.research.map((r,i)=>media(r,Q.works[i],i,true)).join('')}</div><div class="work-chapters">${P.research.map((r,i)=>{
-      const w=Q.works[i];
+    const works=Q.works.map(w=>({...w,research:w.research||P.research[w.source]}));
+    const media=(r,w,i,stage)=>`<div class="${stage?'stage-panel':'chapter-media'}${i===0?' is-active':''}" ${stage?`data-work-media="${i}"`:''}>${w.textOnly?`<div class="discovery-visual" aria-hidden="true">${t(w.visualWords).map((word,j)=>`<span style="--word-order:${j}">${word}</span>`).join('')}<small>LLM × SCIENCE</small></div>`:w.video?`<video controls muted playsinline loop preload="none" poster="${r.image}" aria-label="${esc(t(r.title)+' · '+c.watch)}" data-work-video="${i}"><source src="${w.video}" type="video/mp4"><a href="${w.video}">${c.watch}</a></video>`:`<img src="${r.image}" alt="${esc(t(r.imageAlt))}" width="1000" height="750" loading="lazy">`}<div class="media-caption"><span>${String(i+1).padStart(2,'0')} / ${String(works.length).padStart(2,'0')}</span><span>${esc(t(r.label).split(' / ').pop())}</span><span aria-hidden="true">↗</span></div></div>`;
+    return `<section class="research-section" id="research" aria-labelledby="research-title">${sectionTitle('research',c.research,c.researchEn,'01')}<div class="research-intro"><p>${c.researchLead}</p><div class="work-jumps" aria-label="${c.workIndex}">${works.map((w,i)=>`<a href="#work-${w.id}" data-work-jump="${i}" aria-label="${esc(t(w.research.title))}">${String(i+1).padStart(2,'0')}</a>`).join('')}</div></div><div class="work-gallery"><div class="work-stage" aria-label="${c.playLabel}">${works.map((w,i)=>media(w.research,w,i,true)).join('')}</div><div class="work-chapters">${works.map((w,i)=>{
+      const r=w.research;
       return `<article class="work-chapter${i===0?' is-active':''}" id="work-${w.id}" data-work-chapter="${i}">
-        <div class="chapter-content"><div class="research-meta"><span>${c.chapterLabel} ${String(i+1).padStart(2,'0')}</span><span>${r.period}</span></div><h3>${esc(t(r.title))}</h3><p class="work-question">${esc(t(w.question))}</p><p>${esc(t(w.idea))}</p><p class="work-takeaway">${esc(t(w.takeaway))}</p>
+        <div class="chapter-content"><div class="research-meta"><span>${c.chapterLabel} ${String(i+1).padStart(2,'0')}</span><span>${t(r.period)}</span></div><h3>${esc(t(r.title))}</h3><p class="work-question">${esc(t(w.question))}</p><p>${esc(t(w.idea))}</p><p class="work-takeaway">${esc(t(w.takeaway))}</p>
         ${media(r,w,i,false)}
         <details><summary>${c.details}<span aria-hidden="true">+</span></summary><div class="detail-content"><p>${esc(t(r.detail))}</p><p>${esc(t(r.result))}</p></div></details>
-        <div class="work-links"><a href="${pageUrl('publications.html','#paper-'+w.paper)}">${c.related}${arrow}</a>${w.video?`<a href="${w.video}" target="_blank" rel="noopener">${c.watch}${arrow}</a>`:''}</div></div>
+        <div class="work-links">${w.paper?`<a href="${pageUrl('publications.html','#paper-'+w.paper)}">${c.related}${arrow}</a>`:''}${w.video?`<a href="${w.video}" target="_blank" rel="noopener">${c.watch}${arrow}</a>`:''}</div></div>
       </article>`;
-    }).join('')}</div></div></section>`;
+    }).join('')}</div><div class="work-scroll-track" aria-hidden="true">${Q.works.map((w,i)=>`<div data-work-step="${i}" data-anchor="work-${w.id}"></div>`).join('')}</div></div></section>`;
   }
   function renderMoments(c) {
     const paper=P.publications[4], photos=paper.photos;
@@ -268,7 +280,8 @@
   function bindArtDirection() {
     const experienceCleanup=window.initPortfolioExperience?.();
     const kineticCleanup=window.initKineticScene?.();
-    window.ruiArtCleanup=()=>{experienceCleanup?.();kineticCleanup?.();};
+    const pointerCleanup=window.initPointerEffects?.();
+    window.ruiArtCleanup=()=>{experienceCleanup?.();kineticCleanup?.();pointerCleanup?.();};
   }
 
   render();
