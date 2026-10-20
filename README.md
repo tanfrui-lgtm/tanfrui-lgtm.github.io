@@ -12,11 +12,15 @@ Publish the `main` branch from `/ (root)` using **Settings → Pages → Deploy 
 
 - `content.js`: bilingual education, research, publications, and awards.
 - `portfolio-content.js`: homepage narratives, selected-work prompts, and paper summaries.
-- `app.js`: page structure, translations, navigation, motion, and certificate viewer.
-- CSS files: typography, layout, atmospheric backgrounds, and responsive behavior.
+- `app.js`: page structure, translations, navigation, and image viewer.
+- `experience.css` and `experience.js`: editorial layouts, scroll-linked research media, motion controls, and responsive behavior.
+- `kinetic-scene.js`: original interactive 3D sculpture, with a static fallback when WebGL is unavailable.
+- Other CSS files: base styles, local fonts, galleries, and publication layouts.
 - `assets/`: portrait, CV, project images, videos, certificate previews, and locally hosted fonts.
 
 Use `?lang=en` or `?lang=zh` to open a specific language. Fonts include their OFL licenses in `assets/fonts/`.
+
+The sculpture uses a pinned, locally hosted Three.js module in `assets/vendor/three-0.180.0/`, including its MIT license. Reduced-motion preferences and the homepage pause control disable continuous motion. Research videos play muted when visible and pause when leaving their chapter; narrow screens show media inline.
 
 ## Publication links
 

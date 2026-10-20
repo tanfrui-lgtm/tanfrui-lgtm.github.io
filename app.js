@@ -74,17 +74,12 @@
     document.title = home ? c.homeTitle : `${page==='publications'?c.publications:c.honorsTitle} · Rui Tang 唐睿`;
     document.querySelector('meta[name="description"]').content = c.mission;
     document.getElementById('app').innerHTML = `
-      <div class="ambient-canvas" aria-hidden="true"><div class="ambient-orb one"></div><div class="ambient-orb two"></div></div>
       <header class="site-header"><div class="header-inner">
         <a class="wordmark" href="${home?'#intro':pageUrl('index.html','#intro')}" aria-label="Rui Tang homepage"><span class="monogram">R.</span><span>RUI TANG<span class="wordmark-cn">唐睿</span></span></a>
         <nav class="nav" id="site-nav" aria-label="${lang==='zh'?'主导航':'Main navigation'}">${navLinks.map(([href,id],i)=>`<a href="${href}" data-section="${id}" ${page===id?'aria-current="page"':''}>${c.nav[i]}</a>`).join('')}</nav>
         <div class="header-actions"><button id="language-toggle" class="language-toggle" aria-label="Language ${lang==='en'?'中文':'EN'} · ${c.languageLabel}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg><span>Language</span><span class="language-target">${lang==='en'?'中文':'EN'}</span></button><button class="menu-toggle" id="menu-toggle" aria-label="${c.menu}" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button></div>
       </div></header>
       <div class="page-grid">
-        ${home?`<aside class="profile" aria-label="${lang==='zh'?'个人信息':'Profile'}">
-          <div class="portrait-frame"><img src="assets/portrait.jpg" alt="${lang==='zh'?'唐睿的个人照片':'Portrait of Rui Tang'}" width="413" height="579" fetchpriority="high"></div>
-          <div class="profile-body"><p class="profile-name">${c.name}<span>${c.otherName}</span></p><p class="profile-role">${lang==='zh'?'机器人 · 学习 · 控制':'Robotics · Learning · Control'}</p><a class="email" href="mailto:${P.email}" aria-label="${c.mailLabel}">${mail}<span>${P.email}</span></a></div>
-        </aside>`:''}
         <main id="main">
           ${home?renderHome(c):`<div class="archive-intro"><a class="text-link" href="${pageUrl('index.html')}">← ${c.backHome}</a><p class="eyebrow">RUI TANG / ${page==='publications'?'RESEARCH':'MILESTONES'}</p><h1>${page==='publications'?c.publications:c.honorsTitle}</h1><p>${page==='publications'?c.archiveIntro:c.honorsIntro}</p></div>${page==='publications'?renderPublications(c):renderAwards(c)}`}
           <footer class="site-footer"><span>© 2026 ${c.footer}</span><span>${c.updated} ${P.updated}</span></footer>
@@ -136,7 +131,19 @@
     document.querySelectorAll('main section[id]').forEach(s=>window.ruiObserver.observe(s));
   }
   function renderHome(c) {
-    return `<section class="about-section" id="intro" aria-labelledby="intro-title"><p class="eyebrow">RUI TANG · ROBOTICS / LEARNING / CONTROL</p><h1 id="intro-title">${c.intro}</h1><p class="hello-line">${c.mission}</p><p class="intro-text">${c.opening}</p><div class="intro-links"><a href="#research">${c.explore}${arrow}</a><a href="#contact">${c.contact}${arrow}</a></div></section>
+    return `<section class="opening-section" id="intro" aria-labelledby="intro-title">
+      <div class="opening-topline"><span>${c.portfolioLabel}</span><span>RUI TANG / 2026</span></div>
+      <div class="hero-grid">
+        <div class="identity-card">
+          <div class="identity-top"><span class="identity-cross" aria-hidden="true">✳</span><span>${lang==='en'?'唐睿':'Rui Tang'}</span></div>
+          <div class="identity-main"><h1 id="intro-title">${lang==='en'?'Rui<br>Tang.':'唐睿'}</h1><p>${c.heroNote}</p></div>
+          <div class="identity-bottom"><img src="assets/portrait.jpg" alt="${lang==='zh'?'唐睿的个人照片':'Portrait of Rui Tang'}" width="413" height="579" fetchpriority="high"><div><a href="#research">${c.explore}${arrow}</a><a href="#contact">${c.contact}${arrow}</a></div></div>
+        </div>
+        <div class="kinetic-stage"><canvas id="kinetic-canvas" aria-hidden="true"></canvas><div class="kinetic-fallback" aria-hidden="true"><i></i><i></i><i></i></div><div class="kinetic-topline"><span>ROBOTICS / LEARNING / CONTROL</span><span aria-hidden="true">＋</span></div><div class="kinetic-bottomline"><span>${c.heroCaption}</span><button id="motion-toggle" type="button" aria-pressed="false" data-pause="${c.pauseMotion}" data-resume="${c.resumeMotion}"><span aria-hidden="true">Ⅱ</span><span>${c.pauseMotion}</span></button></div><span class="kinetic-hint">${c.interactionHint}</span></div>
+      </div>
+      <a class="scroll-cue" href="#statement"><span>${c.scrollCue}</span><span aria-hidden="true">↓</span></a>
+    </section>
+      <section class="statement-section" id="statement" aria-labelledby="statement-title"><p class="eyebrow">${c.statementLabel}</p><h2 id="statement-title">${c.intro}</h2><div class="statement-bottom"><span class="statement-mark" aria-hidden="true">↘</span><div><p class="reading-statement">${c.mission}</p><p class="statement-note">${c.opening}</p></div></div></section>
       ${renderResearch(c)}
       ${renderMoments(c)}
       <section class="papers-gateway" id="publications" aria-labelledby="papers-gateway-title"><div><h2 id="papers-gateway-title">${c.papersTitle}</h2><p>${c.papersText}</p></div><a class="text-link" href="${pageUrl('publications.html')}">${c.allPapers}${arrow}</a></section>
@@ -145,15 +152,16 @@
       <section class="contact-section" id="contact" aria-labelledby="contact-title"><h2 id="contact-title">${c.contactTitle}</h2><p>${c.contactText}</p><a class="text-link" href="mailto:${P.email}">${P.email}${arrow}</a></section>`;
   }
   function renderResearch(c) {
-    return `<section class="content-section" id="research" aria-labelledby="research-title">${sectionTitle('research',c.research,c.researchEn,'01')}<p class="section-lead">${c.researchLead}</p><div class="research-list">${P.research.map((r,i)=>{
+    const media=(r,w,i,stage)=>`<div class="${stage?'stage-panel':'chapter-media'}${i===0?' is-active':''}" ${stage?`data-work-media="${i}"`:''}>${w.video?`<video controls muted playsinline loop preload="none" poster="${r.image}" aria-label="${esc(t(r.title)+' · '+c.watch)}" data-work-video="${i}"><source src="${w.video}" type="video/mp4"><a href="${w.video}">${c.watch}</a></video>`:`<img src="${r.image}" alt="${esc(t(r.imageAlt))}" width="1000" height="750" loading="lazy">`}<div class="media-caption"><span>${String(i+1).padStart(2,'0')} / 03</span><span>${esc(t(r.label).split(' / ').pop())}</span><span aria-hidden="true">↗</span></div></div>`;
+    return `<section class="research-section" id="research" aria-labelledby="research-title">${sectionTitle('research',c.research,c.researchEn,'01')}<div class="research-intro"><p>${c.researchLead}</p><div class="work-jumps" aria-label="${c.workIndex}">${Q.works.map((w,i)=>`<a href="#work-${w.id}" data-work-jump="${i}" aria-label="${esc(t(P.research[i].title))}">${String(i+1).padStart(2,'0')}</a>`).join('')}</div></div><div class="work-gallery"><div class="work-stage" aria-label="${c.playLabel}">${P.research.map((r,i)=>media(r,Q.works[i],i,true)).join('')}</div><div class="work-chapters">${P.research.map((r,i)=>{
       const w=Q.works[i];
-      return `<article class="research-item" id="work-${w.id}">
-        <div class="research-visual">${w.video?`<video controls playsinline preload="none" poster="${r.image}" aria-label="${esc(t(r.title)+' · '+c.watch)}"><source src="${w.video}" type="video/mp4"><a href="${w.video}">${c.watch}</a></video>`:`<img src="${r.image}" alt="${esc(t(r.imageAlt))}" width="800" height="600" loading="lazy">`}</div>
-        <div class="research-content"><div class="research-meta"><span>${esc(t(r.label))}</span><span>${r.period}</span></div><h3>${esc(t(r.title))}</h3><p class="work-question">${esc(t(w.question))}</p><p>${esc(t(w.idea))}</p><p class="work-takeaway">${esc(t(w.takeaway))}</p>
+      return `<article class="work-chapter${i===0?' is-active':''}" id="work-${w.id}" data-work-chapter="${i}">
+        <div class="chapter-content"><div class="research-meta"><span>${c.chapterLabel} ${String(i+1).padStart(2,'0')}</span><span>${r.period}</span></div><h3>${esc(t(r.title))}</h3><p class="work-question">${esc(t(w.question))}</p><p>${esc(t(w.idea))}</p><p class="work-takeaway">${esc(t(w.takeaway))}</p>
+        ${media(r,w,i,false)}
         <details><summary>${c.details}<span aria-hidden="true">+</span></summary><div class="detail-content"><p>${esc(t(r.detail))}</p><p>${esc(t(r.result))}</p></div></details>
         <div class="work-links"><a href="${pageUrl('publications.html','#paper-'+w.paper)}">${c.related}${arrow}</a>${w.video?`<a href="${w.video}" target="_blank" rel="noopener">${c.watch}${arrow}</a>`:''}</div></div>
       </article>`;
-    }).join('')}</div></section>`;
+    }).join('')}</div></div></section>`;
   }
   function renderMoments(c) {
     const paper=P.publications[4], photos=paper.photos;
@@ -258,45 +266,10 @@
     });
   }
   function bindArtDirection() {
-    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
-    const root=document.documentElement;
-    const sections=[...document.querySelectorAll('main section[id]')];
-    let frame=0;
-    const update=()=>{
-      frame=0;
-      const span=root.scrollHeight-window.innerHeight;
-      root.style.setProperty('--scroll-progress',span>0?String(window.scrollY/span):'0');
-      root.style.setProperty('--page-drift',reduced.matches?'0px':`${Math.min(window.scrollY,1200)*.12}px`);
-      root.style.setProperty('--portrait-drift',reduced.matches?'0px':`${Math.min(window.scrollY,800)*.03}px`);
-      let chapter='about';
-      sections.forEach(section=>{if(section.getBoundingClientRect().top<window.innerHeight*.48)chapter=section.id;});
-      document.body.dataset.chapter=chapter;
-    };
-    const request=()=>{if(!frame)frame=window.requestAnimationFrame(update);};
-    window.addEventListener('scroll',request,{passive:true});
-    window.addEventListener('resize',request,{passive:true});
-    let reveal;
-    if ('IntersectionObserver' in window) {
-      reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{
-        if(entry.isIntersecting){entry.target.classList.add('is-visible');reveal.unobserve(entry.target);}
-      }),{threshold:.04,rootMargin:'0px 0px 20px 0px'});
-      document.querySelectorAll('.section-heading,.section-lead,.education-item,.research-item,.publication,.award').forEach((element,i)=>{
-        element.classList.add('reveal-target');
-        element.style.setProperty('--reveal-delay',`${i%2*55}ms`);
-        if(element.getBoundingClientRect().top<window.innerHeight)element.classList.add('is-visible');
-        else reveal.observe(element);
-      });
-    }
-    document.querySelectorAll('.about-section .eyebrow,.about-section h1,.about-section .hello-line').forEach(el=>el.classList.add('hero-enter'));
-    root.classList.toggle('motion-ready',!reduced.matches);
-    const preference=()=>{root.classList.toggle('motion-ready',!reduced.matches);request();};
-    reduced.addEventListener('change',preference);
-    update();
-    window.ruiArtCleanup=()=>{
-      window.removeEventListener('scroll',request);window.removeEventListener('resize',request);
-      reduced.removeEventListener('change',preference);reveal?.disconnect();
-      if(frame)window.cancelAnimationFrame(frame);
-    };
+    const experienceCleanup=window.initPortfolioExperience?.();
+    const kineticCleanup=window.initKineticScene?.();
+    window.ruiArtCleanup=()=>{experienceCleanup?.();kineticCleanup?.();};
   }
+
   render();
 })();

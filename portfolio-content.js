@@ -1,6 +1,10 @@
 window.PORTFOLIO = {
   copy: {
     en: {
+      portfolioLabel:'Research portfolio',heroCaption:'A study in motion',interactionHint:'Move your pointer to explore',
+      heroNote:'Exploring the space between perception and action.',scrollCue:'Scroll to explore',
+      pauseMotion:'Pause motion',resumeMotion:'Resume motion',workIndex:'Selected explorations',
+      statementLabel:'THE THREAD THROUGH MY WORK',chapterLabel:'Exploration',playLabel:'Experiment in motion',
       nav:['Work','Papers','Moments','About'],
       mission:'I explore how physical models and learning turn perception into reliable action.',
       opening:'From microscopic interactions to coordinated motion, my work connects robotics, learning, and control.',
@@ -24,6 +28,10 @@ window.PORTFOLIO = {
       homeTitle:'Rui Tang · Robotics, learning & control'
     },
     zh: {
+      portfolioLabel:'个人研究作品集',heroCaption:'运动之间',interactionHint:'移动指针，与装置互动',
+      heroNote:'在感知与行动之间，探索智能。',scrollCue:'向下探索',
+      pauseMotion:'暂停动态效果',resumeMotion:'继续动态效果',workIndex:'精选研究',
+      statementLabel:'连接不同研究的线索',chapterLabel:'研究',playLabel:'实验影像',
       nav:['研究','论文','现场','关于'],
       mission:'我关注物理模型与学习方法如何将感知转化为可靠的行动。',
       opening:'从微观世界中的相互作用，到集群的协调运动，我在机器人、学习与控制之间探索。',
