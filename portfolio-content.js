@@ -1,7 +1,7 @@
 window.PORTFOLIO = {
   copy: {
     en: {
-      portfolioLabel:'Rui Tang / Personal space',heroCaption:'Follow a trajectory',interactionHint:'Move to preview · Drag to switch · Click to explore',
+      portfolioLabel:'Rui Tang / Personal space',heroCaption:'Follow a trajectory',interactionHint:'Drag to rotate · Hover to preview · Click to explore',
       heroField:'World modeling & intelligent decisions',
       heroBio:'I explore how agents understand the physical world and turn that understanding into action.',
       intro:'Understand the world.<br><em>Shape the action.</em>',
@@ -36,7 +36,7 @@ window.PORTFOLIO = {
       homeTitle:'Rui Tang · World modeling & intelligent decisions'
     },
     zh: {
-      portfolioLabel:'唐睿 / 个人空间',heroCaption:'沿着轨迹，发现更多',interactionHint:'移动预览 · 拖动切换 · 点击进入',
+      portfolioLabel:'唐睿 / 个人空间',heroCaption:'沿着轨迹，发现更多',interactionHint:'拖动翻转 · 悬停预览 · 点击进入',
       heroField:'世界建模 · 智能决策',
       heroBio:'探索智能体如何理解物理世界，并将这种理解转化为行动。',
       intro:'理解世界，<br><em>生成行动。</em>',

@@ -14,15 +14,16 @@ Publish the `main` branch from `/ (root)` using **Settings → Pages → Deploy 
 - `portfolio-content.js`: homepage narratives, selected-work prompts, and paper summaries.
 - `app.js`: page structure, translations, navigation, and image viewer.
 - `experience.css` and `experience.js`: editorial layouts, scroll-linked research media, motion controls, and responsive behavior.
-- `kinetic-scene.js`: interactive trajectory navigation with five real destinations; keyboard, hover, and drag controls remain functional without WebGL.
+- `kinetic-scene.js`: perspective 3D navigation with a spatial orbit, projected HTML links, free rotation, and damped inertia; HTML destinations remain usable without WebGL.
 - `refinement.css`: personal introduction, navigation map, and paired text/media transitions.
-- `pointer-effects.js` and `pointer-effects.css`: lightweight water and bubble pointer feedback.
+- `pointer-effects.js` and `pointer-effects.css`: locally rendered WebGL liquid pointer surface, spring-linked trails, and click waves.
+- `motion-polish.css`: masked, perspective typography, hover waves, and coordinated chapter transitions.
 - Other CSS files: base styles, local fonts, galleries, and publication layouts.
 - `assets/`: portrait, CV, project images, videos, certificate previews, and locally hosted fonts.
 
 Use `?lang=en` or `?lang=zh` to open a specific language. Fonts include their OFL licenses in `assets/fonts/`.
 
-The trajectory map uses a pinned, locally hosted Three.js module in `assets/vendor/three-0.180.0/`, including its MIT license. Reduced-motion preferences and the homepage pause control disable continuous motion. Research text and media share the same active chapter. Videos play muted when visible and pause when leaving their chapter; narrow screens show all media inline. Pointer effects are disabled for touch and reduced-motion users.
+The spatial navigation uses a pinned, locally hosted Three.js module in `assets/vendor/three-0.180.0/`, including its MIT license. Reduced-motion preferences and the homepage pause control disable continuous motion. Research text and media share the same active chapter. Videos play muted when visible and pause when leaving their chapter; narrow screens show all media inline. The pointer shader shades only the gesture area and stops drawing when idle; touch and reduced-motion users receive a static presentation.
 
 The vessel world-model demo was supplied and authorized for display by Rui Tang. Its poster is a direct frame from the video. This is ongoing research; the website does not claim publication or acceptance. Scientific discovery, world models, embodied action, and cooperative control are presented as parallel research directions.
 

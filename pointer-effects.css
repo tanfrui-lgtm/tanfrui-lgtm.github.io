@@ -8,6 +8,7 @@
   pointer-events: none;
   user-select: none;
   contain: strict;
+  isolation: isolate;
 }
 
 .pointer-water[hidden] {
