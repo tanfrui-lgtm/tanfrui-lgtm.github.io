@@ -1,7 +1,7 @@
 // Website content. Update both zh and en when editing bilingual text.
 window.PROFILE = {
   email: 'tr2023211281@163.com',
-  updated: '2026.09',
+  updated: '2026.10',
   education: [
     {period:'2027 — 2029', school:{zh:'清华大学',en:'Tsinghua University'}, unit:{zh:'深圳国际研究生院',en:'Shenzhen International Graduate School'}, degree:{zh:'大数据技术与工程 · 硕士',en:'M.Eng. in Big Data Technology and Engineering'}, note:{zh:'推免录取，预计 2027 年入学',en:'Admitted through recommendation; expected entry in 2027'}, initial:'THU', future:true},
     {period:'2023 — 2027', school:{zh:'哈尔滨工业大学（威海）',en:'Harbin Institute of Technology, Weihai'}, unit:{zh:'船舶与海洋工程',en:'Naval Architecture and Ocean Engineering'}, degree:{zh:'工学学士（在读）',en:'B.Eng. candidate'}, note:{zh:'综合成绩 93.59/100 · 专业排名 3/85',en:'Overall score 93.59/100 · Ranked 3 of 85'}, initial:'HIT'}

@@ -1,7 +1,7 @@
 @font-face{font-family:'Fraunces';src:url('assets/fonts/fraunces-variable.woff2') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}
 @font-face{font-family:'Fraunces';src:url('assets/fonts/fraunces-italic-variable.woff2') format('woff2');font-style:italic;font-weight:100 900;font-display:swap}
 @font-face{font-family:'Nunito';src:url('assets/fonts/nunito-variable.woff2') format('woff2');font-style:normal;font-weight:200 1000;font-display:swap}
-@font-face{font-family:'Ma Shan Zheng';src:url('assets/fonts/ma-shan-zheng-site-subset.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:'Ma Shan Zheng';src:url('assets/fonts/ma-shan-zheng-site-subset.woff2?v=20261020') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 :root{--display:'Fraunces',Georgia,serif;--sans:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;--brush:'Ma Shan Zheng','STXingkai','STKaiti','KaiTi',serif;--reading:'Nunito','STKaiti','KaiTi','Kaiti SC','Noto Serif CJK SC',serif}
 body{font-family:var(--sans);font-size:1.0625rem;font-weight:450;line-height:1.85;color:#302637}
 .about-section h1,html[lang=en] .about-section h1{font-family:var(--display);font-variation-settings:'SOFT' 100,'WONK' 1; font-optical-sizing:auto;font-size:clamp(4.6rem,7.6vw,6.35rem);font-weight:500;line-height:1.08;letter-spacing:-.065em;margin:0 0 30px -4px}
