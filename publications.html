@@ -1,30 +1,45 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Rui Tang researches intelligent modeling and decision-making for the physical world, spanning world models, scientific discovery, embodied action, and cooperative control.">
-  <meta name="theme-color" content="#1d45e8">
-  <title>Rui Tang 唐睿 | Academic Homepage</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23244be2'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='Georgia,serif' font-size='37' fill='white'%3ER%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="typography.css?v=20261020-orbit">
-  <link rel="stylesheet" href="gallery.css">
-  <link rel="stylesheet" href="publications.css?v=20261020-orbit">
-  <link rel="stylesheet" href="experience.css?v=20261020-orbit">
-  <link rel="stylesheet" href="refinement.css?v=20261020-orbit">
-  <link rel="stylesheet" href="pointer-effects.css?v=20261020-orbit">
-  <link rel="stylesheet" href="motion-polish.css?v=20261020-orbit">
-  <script src="pointer-effects.js?v=20261020-orbit" defer></script>
-  <script src="experience.js?v=20261020-orbit" defer></script>
-  <script src="kinetic-scene.js?v=20261020-orbit" defer></script>
-  <script src="content.js?v=20261020-orbit" defer></script>
-  <script src="portfolio-content.js?v=20261020-orbit" defer></script>
-  <script src="app.js?v=20261020-orbit" defer></script>
+  <title>Rui Tang · New address / 主页已迁移</title>
+  <link rel="canonical" href="https://tangrui-web.github.io/publications.html">
+  <style>
+    :root{color-scheme:light;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#20252b;background:#f5f5f0}
+    body{max-width:680px;margin:12vh auto;padding:0 24px;line-height:1.7}
+    h1{font-size:clamp(28px,5vw,44px);line-height:1.2;margin:0 0 28px}
+    p{margin:14px 0}a{color:#234bd8;text-underline-offset:4px;overflow-wrap:anywhere}
+    .action{display:inline-block;margin:12px 0;padding:10px 17px;background:#234bd8;color:white;text-decoration:none;border-radius:4px}
+    a:focus-visible{outline:3px solid #234bd8;outline-offset:5px}
+    .address{font-size:14px;color:#58616b}noscript{display:block;margin-top:20px}
+  </style>
 </head>
-<body data-page="publications">
-  <a class="skip-link" href="#main">跳至正文 / Skip to content</a>
-  <div id="app"></div>
-  <noscript>Rui Tang 唐睿 · World modeling and intelligent decisions. 联系邮箱 / Email: <a href="mailto:tr2023211281@163.com">tr2023211281@163.com</a>. 请启用 JavaScript 浏览作品与论文 / Enable JavaScript to explore the work and research.</noscript>
+<body>
+  <main>
+    <h1>Rui Tang <span lang="zh-CN">唐睿</span></h1>
+    <p>My website has moved to a new address.</p>
+    <p lang="zh-CN">个人网站已迁移，欢迎访问新地址。</p>
+    <a class="action" data-destination href="https://tangrui-web.github.io/publications.html">Continue to the new site <span lang="zh-CN">／ 前往新网站</span></a>
+    <p class="address"><a id="destination-url" data-destination href="https://tangrui-web.github.io/publications.html">https://tangrui-web.github.io/publications.html</a></p>
+    <noscript><p>JavaScript is disabled. Please use the link above.<br><span lang="zh-CN">当前未启用 JavaScript，请点击上方链接。</span></p></noscript>
+  </main>
+  <script>
+    (() => {
+      const target = new URL('https://tangrui-web.github.io/publications.html');
+      if (location.protocol === 'http:' || location.protocol === 'https:') {
+        target.pathname = location.pathname;
+      }
+      target.search = location.search;
+      target.hash = location.hash;
+      document.querySelectorAll('[data-destination]').forEach(link => { link.href = target.href; });
+      document.getElementById('destination-url').textContent = target.href;
+      const canonicalPath = target.pathname === '/index.html' ? '/' : target.pathname;
+      document.querySelector('link[rel="canonical"]').href = target.origin + canonicalPath;
+      const legacyOrLocal = ['tanfrui-lgtm.github.io', 'localhost', '127.0.0.1', '[::1]'];
+      if (legacyOrLocal.includes(location.hostname)) location.replace(target.href);
+    })();
+  </script>
 </body>
 </html>
+

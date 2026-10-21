@@ -1,5 +1,9 @@
 # Rui Tang · Academic Homepage
 
+This repository now redirects the former website to [tangrui-web.github.io](https://tangrui-web.github.io/), preserving page paths, language selections, and anchors. Keep GitHub Pages enabled here for existing links.
+
+For website updates, use [tangrui-web/tangrui-web.github.io](https://github.com/tangrui-web/tangrui-web.github.io). The notes below describe the original portfolio; its full source and assets are maintained in the new repository.
+
 English-first research portfolio with Chinese language switching, organized around intelligent modeling and decision-making for the physical world.
 
 The homepage presents selected work, experiments, and conference moments. Complete papers and honors live in `publications.html` and `honors.html`; the homepage has no résumé download entry.
